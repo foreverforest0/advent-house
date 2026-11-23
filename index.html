@@ -14,201 +14,236 @@
 :root{
   --paper:#FCE8C2;
   --paper-2:#F8DFB4;
-  --red:#941704;
-  --green:#053B2D;
-  --gold:#C99A2E;
-  --ink:#2A1A14;
-  --ink-soft:rgba(42,26,20,.6);
+  --red:#8f0500;
+  --red-soft:rgba(143,5,0,.12);
+  --green:#044529;
+  --green-soft:rgba(4,69,41,.08);
+  --gold:#562400;
+  --cream:#ffecc5;
+  --ink:#562400;
+  --ink-soft:rgba(86,36,0,.55);
+  --white:#fffbe9;
   --mono:'Cutive Mono','Courier New',monospace;
   --serif:'Lora',Georgia,serif;
-  --dot:rgba(148,23,4,.5);
 }
 
 html,body{height:100%;margin:0;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--mono)}
 body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.05;
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.045;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
 }
 
-/* ---------- чип прогресса ---------- */
-.chip{
-  position:fixed;left:14px;bottom:14px;z-index:22;
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ink-soft);background:rgba(247,239,219,.86);
-  border:1px dotted rgba(148,23,4,.35);border-radius:999px;padding:6px 12px;
-  backdrop-filter:blur(3px);
+/* ---------- COUNTDOWN BAR ---------- */
+.countdown{
+  position:fixed;left:0;right:0;top:0;height:48px;z-index:25;
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:0 16px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-soft);
+  background:linear-gradient(var(--paper) 70%, rgba(252,232,194,0));
+  border-bottom:1px dotted rgba(143,5,0,.18);
 }
-.chip b{color:var(--red);font-weight:400}
-.chip .dotsb{display:inline-flex;align-items:center;gap:5px;transition:transform .18s}
-.chip .dotsb i{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(42,26,20,.3);display:inline-block}
-.chip .dotsb.bump{transform:scale(1.2)}
-.chip .rst{margin-left:2px;color:rgba(42,26,20,.4);cursor:pointer;border:0;background:none;font:inherit;letter-spacing:.14em}
-.chip .rst:hover{color:var(--red)}
+.countdown .label{color:var(--green);font-weight:400}
+.countdown .num{font-size:18px;font-weight:400;color:var(--red);letter-spacing:.08em;font-variant-numeric:tabular-nums}
 
-/* ---------- дом ---------- */
+/* ---------- HOUSE ---------- */
 .stage{position:fixed;inset:0;z-index:1;overflow:hidden}
-.house{position:absolute;top:54px;left:50%;width:1122px;height:1402px;transform-origin:top center}
-.house img{
-  display:block;width:100%;height:auto;border-radius:4px;
-  
-}
-.houseshadow{position:absolute;left:0;right:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.lights{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.house{position:absolute;top:0;left:50%;width:1122px;height:1402px;transform-origin:top center}
+.house img{display:block;width:100%;height:auto;border-radius:6px}
+.house canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 
+/* ---------- WINDOWS ---------- */
 .win{
   position:absolute;padding:0;border:0;background:transparent;cursor:pointer;
-  perspective:420px;perspective-origin:50% 0;-webkit-tap-highlight-color:transparent;
+  perspective:480px;perspective-origin:left center;-webkit-tap-highlight-color:transparent;
 }
 .win:focus-visible{outline:2px dotted var(--red);outline-offset:3px}
 
-/* створка как страница книги — видна только перфорация */
+/* FLAP — opens LEFT, digit visible on back of flap */
 .flap{
   position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;
   background:transparent;
   box-shadow:none;
   display:flex;align-items:center;justify-content:center;
-  transition:transform .62s cubic-bezier(.34,.9,.24,1), box-shadow .35s;
+  transition:transform .65s cubic-bezier(.32,.88,.24,1), box-shadow .35s;
   backface-visibility:visible;
 }
 .flap::after{
   content:"";position:absolute;inset:0;pointer-events:none;
-  border:1.5px dotted rgba(148,23,4,.4);border-radius:1px;
+  border:1.4px dotted rgba(143,5,0,.35);border-radius:1px;
   transition:opacity .18s, border-color .18s;
 }
-.win:hover .flap::after{border-color:rgba(148,23,4,.7);box-shadow:0 0 0 2px rgba(247,239,219,.6)}
-.win.crack .flap{animation:crack .18s ease-out}
-@keyframes crack{
-  0%{transform:rotateY(0)}
-  35%{transform:rotateY(-4deg)}
-  70%{transform:rotateY(-1deg)}
-  100%{transform:rotateY(0)}
-}
+.win:hover .flap::after{border-color:rgba(143,5,0,.7);box-shadow:0 0 0 2px rgba(252,232,194,.5)}
 .win.open .flap{
-  transform:rotateY(-118deg);
-  box-shadow:2px 1px 10px -4px rgba(42,26,20,.45), inset 0 0 0 1px rgba(255,255,255,.35);
+  transform:rotateY(118deg);
+  box-shadow:-3px 1px 12px -4px rgba(86,36,0,.45), inset 0 0 0 1px rgba(255,255,255,.35);
 }
 .win.open .flap::after{opacity:.45;transform:rotateY(0deg)}
-.win.done .flap::after{border-color:rgba(5,59,45,.45)}
+.win.done .flap::after{border-color:rgba(4,69,41,.45)}
+
+.flap .num{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  font-family:var(--mono);font-size:22px;line-height:1;color:var(--red);
+  letter-spacing:.02em;text-shadow:0 1px 0 rgba(252,232,194,.95), 0 0 7px rgba(252,232,194,.95);
+}
+.win.open .flap .num{opacity:0;transition:opacity .15s}
 
 .win .glow{
   position:absolute;inset:0;pointer-events:none;opacity:0;border-radius:1px;
-  background:radial-gradient(circle at 50% 58%, rgba(255,206,126,.42), rgba(255,206,126,0) 72%);
+  background:radial-gradient(circle at 50% 58%, rgba(255,236,197,.45), rgba(255,236,197,0) 72%);
   transition:opacity .6s ease;
 }
 .win.open .glow{opacity:1}
 
 .win .mark{
-  position:absolute;right:-3px;bottom:-3px;width:11px;height:11px;border-radius:50%;
+  position:absolute;right:-4px;bottom:-4px;width:12px;height:12px;border-radius:50%;
   background:var(--green);opacity:0;transition:opacity .3s .2s;pointer-events:none;
   box-shadow:0 0 0 2px var(--paper);
 }
 .win.done .mark{opacity:1}
 
-/* ---------- снег и сугроб ---------- */
+/* ---------- SNOW & DRIFTS ---------- */
 #snow{position:fixed;inset:0;z-index:40;pointer-events:none}
-.bank{position:fixed;left:0;right:0;bottom:0;height:46px;z-index:12;cursor:pointer;
-      filter:drop-shadow(0 -4px 8px rgba(42,26,20,.07))}
+.bank{position:fixed;left:0;right:0;bottom:0;height:44px;z-index:12;cursor:crosshair}
 .bank svg{width:100%;height:100%;display:block}
-.puff{position:fixed;z-index:41;width:12px;height:12px;border-radius:50%;background:#fff;
-  border:1px solid rgba(42,26,20,.18);pointer-events:none;animation:puff .5s ease-out forwards}
-@keyframes puff{from{transform:translate(-50%,-50%) scale(.4);opacity:.95}to{transform:translate(-50%,-160%) scale(2);opacity:0}}
+.snowball{
+  position:fixed;z-index:41;width:28px;height:28px;border-radius:50%;background:#fff;
+  border:1px solid rgba(86,36,0,.22);pointer-events:none;opacity:0;
+  box-shadow:0 2px 6px rgba(86,36,0,.18);
+  transition:transform .12s, opacity .12s;
+}
+.snowball.active{opacity:1}
+.snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 
-/* ---------- страница задания ---------- */
+/* ---------- COUNTDOWN CHIP ---------- */
+.chip{
+  position:fixed;left:12px;bottom:12px;z-index:22;
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);background:rgba(252,232,194,.88);
+  border:1px dotted rgba(143,5,0,.3);border-radius:999px;padding:6px 12px;
+  backdrop-filter:blur(3px);
+}
+.chip b{color:var(--red);font-weight:400}
+.chip .rst{margin-left:6px;color:rgba(86,36,0,.4);cursor:pointer;border:0;background:none;font:inherit;letter-spacing:.14em}
+.chip .rst:hover{color:var(--red)}
+
+/* ---------- GARLAND ---------- */
+.bulb{animation:blink 3s infinite}
+.bulb:nth-child(2n){animation-delay:.6s}
+.bulb:nth-child(3n){animation-delay:1.2s}
+@keyframes blink{0%,68%,100%{opacity:1}76%,84%{opacity:.18}}
+@media(prefers-reduced-motion:reduce){.bulb{animation:none}}
+
+/* ---------- TASK PAGE ---------- */
 .task-page{
   position:fixed;inset:0;z-index:30;background:var(--paper);overflow-y:auto;
-  animation:pageIn .32s cubic-bezier(.2,.7,.3,1);
+  animation:pageIn .3s cubic-bezier(.2,.7,.3,1);
 }
-@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.task-page .garland{position:absolute;left:0;right:0;top:0;height:46px;pointer-events:none;opacity:.95}
-.tp-inner{position:relative;max-width:820px;margin:0 auto;padding:58px 24px 120px}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.task-page .garland{position:absolute;left:0;right:0;top:0;height:52px;pointer-events:none;opacity:.95}
+.tp-inner{position:relative;max-width:840px;margin:0 auto;padding:64px 24px 120px}
 .back{
-  position:fixed;left:16px;top:58px;z-index:32;font-family:var(--mono);font-size:9px;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--red);
-  background:rgba(247,239,219,.92);border:1px dotted rgba(148,23,4,.4);border-radius:999px;
+  position:fixed;left:14px;top:14px;z-index:32;font-family:var(--mono);font-size:9px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--red);
+  background:rgba(252,232,194,.92);border:1px dotted rgba(143,5,0,.35);border-radius:999px;
   cursor:pointer;padding:7px 13px;
 }
-.back:hover{color:var(--red)}
+.back:hover{color:#6b0400;background:var(--cream)}
 
-.tp-num{font-family:var(--mono);font-size:clamp(56px,9vw,104px);line-height:.9;color:var(--red);letter-spacing:.02em}
-.tp-title{font-family:var(--mono);font-size:clamp(15px,1.7vw,19px);letter-spacing:.18em;text-transform:uppercase;
-  color:var(--green);margin:14px 0 26px}
-.tp-text{font-family:var(--serif);font-size:clamp(20px,2.5vw,30px);line-height:1.55;margin:0 0 26px;max-width:760px}
+.tp-title-badge{
+  display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--green);background:rgba(4,69,41,.08);
+  border:1px solid rgba(4,69,41,.2);border-radius:999px;padding:4px 12px;margin-bottom:14px;
+}
+.tp-num{font-family:var(--mono);font-size:clamp(52px,8vw,96px);line-height:.9;color:var(--red);letter-spacing:.02em}
+.tp-title{font-family:var(--mono);font-size:clamp(15px,1.6vw,18px);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--green);margin:14px 0 24px}
+.tp-text{font-family:var(--serif);font-size:clamp(19px,2.2vw,27px);line-height:1.6;margin:0 0 28px;max-width:780px}
 .tp-text b{color:var(--red);font-weight:400}
 
-.tp-list{margin:0 0 26px;padding:0;list-style:none;max-width:760px}
-.tp-list li{font-family:var(--serif);font-size:clamp(16px,1.9vw,21px);line-height:1.7;color:var(--ink);
+.tp-list{margin:0 0 28px;padding:0;list-style:none;max-width:780px}
+.tp-list li{font-family:var(--serif);font-size:clamp(16px,1.8vw,21px);line-height:1.7;color:var(--ink);
   padding-left:22px;position:relative}
 .tp-list li::before{content:"—";position:absolute;left:0;color:var(--green)}
 
-.tp-shots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 24px;max-width:760px}
-.tp-shots a{display:block;aspect-ratio:4/3;overflow:hidden;border:1px solid rgba(148,23,4,.3);border-radius:3px}
+.tp-shots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 26px;max-width:780px}
+.tp-shots a{display:block;aspect-ratio:4/3;overflow:hidden;border:1px solid rgba(143,5,0,.3);border-radius:4px}
 .tp-shots img{width:100%;height:100%;object-fit:cover;display:block}
 
-.tp-links{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}
-.tp-links a{font-size:9px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--green);
-  border:1px solid rgba(5,59,45,.32);border-radius:999px;padding:6px 11px}
-.tp-links a:hover{background:rgba(5,59,45,.06)}
+.tp-links{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 28px}
+.tp-links a{font-size:9px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--green);
+  border:1px solid rgba(4,69,41,.28);border-radius:999px;padding:6px 11px}
+.tp-links a:hover{background:rgba(4,69,41,.06)}
 
-.tp-levels{display:inline-flex;border:1px dotted rgba(148,23,4,.45);border-radius:999px;padding:3px;gap:2px;margin-bottom:12px}
-.tp-levels button{font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:5px 13px;border-radius:999px;
-  border:0;background:transparent;color:var(--ink-soft);cursor:pointer}
-.tp-levels button.on{background:var(--red);color:var(--paper)}
-.tp-level{font-family:var(--serif);font-size:clamp(16px,1.9vw,20px);line-height:1.6;color:var(--ink);
-  border-left:2px solid var(--green);padding-left:16px;margin:0 0 34px;max-width:760px}
+.tp-level{font-family:var(--serif);font-size:clamp(16px,1.8vw,21px);line-height:1.6;color:var(--ink);
+  border-left:2px solid var(--green);padding-left:18px;margin:0 0 38px;max-width:780px}
 
-.tp-answer{max-width:760px}
+.tp-answer{max-width:780px}
 .tp-answer textarea{
-  width:100%;min-height:150px;resize:vertical;font-family:var(--serif);font-size:clamp(16px,1.9vw,19px);
-  line-height:1.6;color:var(--ink);background:#FDFAF2;border:1.5px dotted rgba(148,23,4,.45);
-  border-radius:4px;padding:16px 18px;outline:none;
+  width:100%;min-height:150px;resize:vertical;font-family:var(--serif);font-size:clamp(16px,1.9vw,20px);
+  line-height:1.6;color:var(--ink);background:#FDFAF2;border:1.5px dotted rgba(143,5,0,.4);border-radius:4px;padding:16px 18px;outline:none
 }
 .tp-answer textarea:focus{border-style:solid;border-color:var(--red)}
-.tp-actions{display:flex;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap}
-.tp-done{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  padding:10px 20px;border-radius:999px;border:1px solid var(--red);background:var(--red);color:var(--paper);cursor:pointer}
+.tp-actions{display:flex;align-items:center;gap:14px;margin-top:18px;flex-wrap:wrap}
+.tp-done{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  padding:10px 20px;border-radius:999px;border:1px solid var(--red);background:var(--red);color:var(--cream);cursor:pointer}
 .tp-done.on{background:var(--green);border-color:var(--green)}
-.tp-hint{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
-
-/* ---------- лампочки ---------- */
-.bulb{animation:blink 2.8s infinite}
-.bulb:nth-child(2n){animation-delay:.7s}
-.bulb:nth-child(3n){animation-delay:1.4s}
-@keyframes blink{0%,70%,100%{opacity:1}78%,86%{opacity:.2}}
-@media(prefers-reduced-motion:reduce){.bulb{animation:none}}
+.tp-hint{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
 
 @media(max-width:700px){
-  .bar{height:46px;font-size:8.5px}
-  .house{top:46px}
-  .tp-inner{padding:52px 18px 110px}
+  .tp-inner{padding:56px 18px 110px}
   .tp-shots{grid-template-columns:1fr 1fr}
-  .bank{height:34px}
+  .bank{height:32px}
 }
+
+/* ---------- CHIP PROGRESS ---------- */
+.chip{position:fixed;left:12px;bottom:12px;z-index:22;
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);background:rgba(252,232,194,.88);
+  border:1px dotted rgba(143,5,0,.3);border-radius:999px;padding:6px 12px;
+  backdrop-filter:blur(3px)}
+.chip b{color:var(--red);font-weight:400}
+.chip .rst{margin-left:6px;color:rgba(86,36,0,.4);cursor:pointer;border:0;background:none;font:inherit;letter-spacing:.14em}
+.chip .rst:hover{color:var(--red)}
+
+/* ---------- SNOWBALL DRAG ---------- */
+.snowball{
+  position:fixed;z-index:41;width:28px;height:28px;border-radius:50%;background:#fff;
+  border:1px solid rgba(86,36,0,.22);pointer-events:none;opacity:0;
+  box-shadow:0 2px 6px rgba(86,36,0,.18);
+  transition:transform .12s, opacity .12s;
+}
+.snowball.active{opacity:1}
+.snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 </style>
 </head>
 <body>
 
 <canvas id="snow"></canvas>
 
-<div class="chip"><b id="count">0</b>/31<span class="dotsb"><i></i><b id="snowballs">0</b></span><button class="rst" id="reset" type="button">reset</button></div>
-
 <div class="stage" id="stage">
   <div class="house" id="house">
     <img src="facade.jpg" alt="Hand-drawn advent house">
-    <svg class="houseshadow" id="houseShadow" viewBox="0 0 1122 1402" aria-hidden="true"></svg>
     <svg class="lights" id="lights" viewBox="0 0 1122 1402" aria-hidden="true"></svg>
+    <svg class="houseshadow" id="houseShadow" viewBox="0 0 1122 1402" aria-hidden="true"></svg>
   </div>
 </div>
 
-<div class="bank" id="bank" title="Gather snow">
-  <svg viewBox="0 0 1000 50" preserveAspectRatio="none">
-    <path d="M0 50 L0 24 q36 -14 74 -4 q44 -16 90 -2 q44 -14 90 -2 q44 -13 90 -2 q44 -13 90 -2 q44 -13 90 -2 q44 -13 90 -2 q44 -13 90 -2 q44 -13 90 -2 q44 -13 90 -2 q44 -13 90 -1 q36 -9 74 3 L1000 50 Z"
-          fill="#FDFBF6" stroke="#2A1A14" stroke-width="1.4" stroke-opacity=".28"/>
+<div class="bank" id="bank" title="Drag to roll a snowball">
+  <svg viewBox="0 0 1000 48" preserveAspectRatio="none">
+    <path d="M0 48 L0 22 q36 -12 74 -3 q44 -14 90 -2 q44 -12 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -1 q36 -7 74 3 L1000 48 Z"
+          fill="#FDFBF6" stroke="#562400" stroke-width="1.2" stroke-opacity=".25"/>
   </svg>
 </div>
 
+<div class="chip">
+  <span class="countdown"><span class="label">days before the new year</span><span class="num" id="countdown">0</span></span>
+  <button class="rst" id="reset" type="button">reset</button>
+</div>
+
 <section class="task-page" id="taskPage" hidden>
-  <svg class="garland" id="garland" viewBox="0 0 1000 46" preserveAspectRatio="none" aria-hidden="true"></svg>
+  <svg class="garland" id="garland" viewBox="0 0 1000 52" preserveAspectRatio="none" aria-hidden="true"></svg>
   <button class="back" id="back" type="button">← the house</button>
   <div class="tp-inner" id="tpInner"></div>
 </section>
@@ -220,98 +255,107 @@ body::before{
   const DATA = window.ADVENT, DOORS = DATA.doors;
   const WD = { "пн":"mon","вт":"tue","ср":"wed","чт":"thu","пт":"fri","сб":"sat","вс":"sun" };
   const el = (s) => document.querySelector(s);
-  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({'&':'&','<':'<','>':'>','"':'"'}[c]));
 
-  /* координаты по красным номерам рисунка (1122 × 1402) */
+  /* coordinates from illustration (1122 x 1402) */
   const W = 1122, H = 1402;
   const CELLS = [
-    { d:28, x:275, y:294, w:58, h:62, arch:1 },
-    { d:16, x:420, y:294, w:58, h:62, arch:1 },
-    { d:29, x:572, y:292, w:58, h:62, arch:1 },
-    { d:3, x:713, y:294, w:52, h:62, arch:1 },
-    { d:15, x:855, y:296, w:58, h:62, arch:1 },
-    { d:7, x:224, y:477, w:66, h:80, arch:1 },
-    { d:20, x:400, y:477, w:66, h:80, arch:1 },
-    { d:31, x:571, y:473, w:58, h:80, arch:1 },
-    { d:4, x:734, y:478, w:60, h:80, arch:1 },
-    { d:13, x:901, y:476, w:66, h:80, arch:1 },
-    { d:23, x:230, y:678, w:66, h:80, arch:1 },
-    { d:9, x:406, y:678, w:58, h:80, arch:1 },
-    { d:6, x:567, y:680, w:58, h:80, arch:1 },
-    { d:17, x:730, y:677, w:66, h:80, arch:1 },
-    { d:26, x:897, y:680, w:66, h:80, arch:1 },
-    { d:21, x:224, y:863, w:66, h:78, arch:1 },
-    { d:2, x:397, y:864, w:56, h:78, arch:1 },
-    { d:19, x:567, y:862, w:60, h:78, arch:1 },
-    { d:30, x:730, y:862, w:66, h:78, arch:1 },
-    { d:22, x:905, y:863, w:66, h:78, arch:1 },
-    { d:18, x:220, y:1021, w:64, h:78, arch:1 },
-    { d:12, x:396, y:1021, w:60, h:78, arch:1 },
-    { d:5, x:568, y:1021, w:56, h:78, arch:1 },
-    { d:27, x:731, y:1020, w:64, h:78, arch:1 },
-    { d:10, x:903, y:1021, w:64, h:78, arch:1 },
-    { d:8, x:212, y:1221, w:60, h:86 },
-    { d:14, x:355, y:1221, w:60, h:86 },
-    { d:25, x:511, y:1205, w:62, h:110 },
-    { d:11, x:671, y:1221, w:60, h:86 },
-    { d:24, x:810, y:1222, w:60, h:86 },
-    { d:1, x:944, y:1222, w:56, h:86 }
+    { d:28, x:275, y:294, w:58, h:62 }, { d:16, x:420, y:294, w:58, h:62 },
+    { d:29, x:572, y:292, w:58, h:62 }, { d:3,  x:713, y:294, w:52, h:62 },
+    { d:15, x:855, y:296, w:58, h:62 },
+    { d:7,  x:224, y:477, w:66, h:80 }, { d:20, x:400, y:477, w:66, h:80 },
+    { d:31, x:571, y:473, w:58, h:80 }, { d:4,  x:734, y:478, w:60, h:80 },
+    { d:13, x:901, y:476, w:66, h:80 },
+    { d:23, x:230, y:678, w:66, h:80 }, { d:9,  x:406, y:678, w:58, h:80 },
+    { d:6,  x:567, y:680, w:58, h:80 }, { d:17, x:730, y:677, w:66, h:80 },
+    { d:26, x:897, y:680, w:66, h:80 },
+    { d:21, x:224, y:863, w:66, h:78 }, { d:2,  x:397, y:864, w:56, h:78 },
+    { d:19, x:567, y:862, w:60, h:78 }, { d:30, x:730, y:862, w:66, h:78 },
+    { d:22, x:905, y:863, w:66, h:78 },
+    { d:18, x:220, y:1021, w:64, h:78 }, { d:12, x:396, y:1021, w:60, h:78 },
+    { d:5,  x:568, y:1021, w:56, h:78 }, { d:27, x:731, y:1020, w:64, h:78 },
+    { d:10, x:903, y:1021, w:64, h:78 },
+    { d:8,  x:212, y:1221, w:60, h:86 }, { d:14, x:355, y:1221, w:60, h:86 },
+    { d:25, x:511, y:1205, w:62, h:110 }, { d:11, x:671, y:1221, w:60, h:86 },
+    { d:24, x:810, y:1222, w:60, h:86 }, { d:1,  x:944, y:1222, w:56, h:86 }
   ];
 
-  const KD = "adv26.house.done", KA = "adv26.house.ans", KB = "adv26.house.balls";
+  /* creative holiday names for each window */
+  const NAMES = {
+    1: "First Snow Whisper",
+    2: "Cocoa & Candlelight",
+    3: "The Gifting Hour",
+    4: "Caption the Cat",
+    5: "Christmas Elsewhere",
+    6: "Would You Rather… Snow",
+    7: "Songs We Grew Up With",
+    8: "Your Wrapped",
+    9: "Over & Under the Tree",
+    10: "Describe the Film",
+    11: "Expectation vs Reality",
+    12: "Grandma's Recipe",
+    13: "A Photo from Childhood",
+    14: "Three Seconds of Joy",
+    15: "What the World Searched",
+    16: "Make, Do, Have, Take",
+    17: "What Would You Say?",
+    18: "Translate the Meme",
+    19: "The Lost Tradition",
+    20: "2026 in Five Words",
+    21: "Song of My Year",
+    22: "In & Out for 2027",
+    23: "Word Chain",
+    24: "No Words Needed",
+    25: "Alphabet of Christmas",
+    26: "Explain It to a 12-Year-Old",
+    27: "New Year Then & Now",
+    28: "Pitch the Perfect Song",
+    29: "Mini Survey",
+    30: "3-2-1 Reflection",
+    31: "Snow Globe Story"
+  };
+
+  const W = 1122, H = 1402;
+  const KD = "adv26.house.done", KA = "adv26.house.ans";
   const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch(e){ return d; } };
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
-  let done = load(KD, {}), ans = load(KA, {}), balls = load(KB, 0), current = null;
+  let done = load(KD, {}), ans = load(KA, {}), current = null, snowball = null, dragStart = null;
 
-  /* ---------- звук ---------- */
+  /* ---------- SOUND ---------- */
   let ac = null, tearBuf = null;
-
-  function loadTear(){
-    fetch('tear.wav').then(async (r) => {
-      const ab = await r.arrayBuffer();
-      tearBuf = await audio().decodeAudioData(ab);
-    }).catch(() => {});
-  }
-
   function audio(){
     if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
     if (ac.state === "suspended") ac.resume();
     return ac;
   }
-  function noiseBuffer(a, dur){
-    const n = Math.floor(a.sampleRate * dur), b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
-    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
-    return b;
+  async function loadTear(){
+    try {
+      const r = await fetch('tear.wav');
+      const ab = await r.arrayBuffer();
+      tearBuf = await audio().decodeAudioData(ab);
+    } catch(e) {}
   }
   function tear(){
     const a = audio();
     if (tearBuf) {
-      const s = a.createBufferSource();
-      s.buffer = tearBuf;
-      const g = a.createGain();
-      g.gain.setValueAtTime(.22, a.currentTime);
+      const s = a.createBufferSource(); s.buffer = tearBuf;
+      const g = a.createGain(); g.gain.setValueAtTime(.22, a.currentTime);
       g.gain.exponentialRampToValueAtTime(.0001, a.currentTime + .34);
-      s.connect(g).connect(a.destination);
-      s.start();
+      s.connect(g).connect(a.destination); s.start();
     } else {
-      noiseTear(a);
+      const dur = .34, n = Math.floor(a.sampleRate * .34), b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      const src = a.createBufferSource(); src.buffer = b;
+      const bp = a.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 1.2;
+      bp.frequency.setValueAtTime(2600, a.currentTime);
+      bp.frequency.exponentialRampToValueAtTime(600, a.currentTime + .34);
+      const g = a.createGain();
+      g.gain.setValueAtTime(.0001, a.currentTime);
+      g.gain.exponentialRampToValueAtTime(.19, a.currentTime + .02);
+      g.gain.exponentialRampToValueAtTime(.0001, a.currentTime + .34);
+      src.connect(bp).connect(g).connect(a.destination); src.start();
     }
   }
-
-  function noiseTear(a){
-    const dur = .34, n = Math.floor(a.sampleRate * dur), b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
-    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
-    const src = a.createBufferSource(); src.buffer = b;
-    const bp = a.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 1.2;
-    bp.frequency.setValueAtTime(2600, a.currentTime);
-    bp.frequency.exponentialRampToValueAtTime(600, a.currentTime + dur);
-    const g = a.createGain();
-    g.gain.setValueAtTime(.0001, a.currentTime);
-    g.gain.exponentialRampToValueAtTime(.19, a.currentTime + .02);
-    g.gain.exponentialRampToValueAtTime(.0001, a.currentTime + dur);
-    src.connect(bp).connect(g).connect(a.destination); src.start();
-  }
-
   function pop(){
     const a = audio(), o = a.createOscillator(), g = a.createGain();
     o.type = "sine";
@@ -323,51 +367,60 @@ body::before{
     o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + .16);
   }
 
-  /* ---------- гирлянда ---------- */
-  function drawLights(){
-    let out = "";
-    const N = 16;
-    for (let i = 0; i < N; i++){
-      const x = 128 + i * (868 / (N - 1));
-      const y = 560 + Math.sin(i / (N - 1) * Math.PI * 3) * 12;
-      const col = i % 3 === 0 ? "#B3371B" : i % 3 === 1 ? "#C99A2E" : "#3F6B4A";
-      out += '<circle cx="' + x.toFixed(0) + '" cy="' + y.toFixed(0) + '" r="9" fill="' + col + '" opacity=".10"/>';
-      out += '<circle class="bulb" cx="' + x.toFixed(0) + '" cy="' + y.toFixed(0) + '" r="4.6" fill="' + col + '"/>';
-    }
-    el("#lights").innerHTML = out;
-    el("#houseShadow").innerHTML =
-      '<defs><filter id="gs" x="-30%" y="-60%" width="160%" height="260%">' +
-      '<feGaussianBlur stdDeviation="26"/></filter></defs>' +
-      '<ellipse cx="561" cy="1332" rx="360" ry="26" fill="#2A1A14" opacity=".22" filter="url(#gs)"/>';
-
-    let g = "";
-    for (let i = 0; i < 22; i++){
-      const x = 22 + i * 45.5;
-      const y = 22 + Math.sin(i / 21 * Math.PI * 4) * 9;
-      const col = i % 3 === 0 ? "#B3371B" : i % 3 === 1 ? "#C99A2E" : "#3F6B4A";
-      g += '<circle cx="' + x + '" cy="' + y + '" r="7" fill="' + col + '" opacity=".10"/>';
-      g += '<circle class="bulb" cx="' + x + '" cy="' + y + '" r="3.6" fill="' + col + '"/>';
-    }
-    el("#garland").innerHTML = '<path d="M0 18 Q250 34 500 18 T1000 18" fill="none" stroke="#2A1A14" stroke-opacity=".25" stroke-width="1.4"/>' + g;
+  /* ---------- COUNTDOWN TO NEW YEAR ---------- */
+  function updateCountdown(){
+    const now = new Date();
+    const ny = new Date(now.getFullYear(), 11, 31, 23, 59, 59);
+    if (now > ny) { el("#countdown").textContent = "0"; return; }
+    const diff = Math.ceil((ny - now) / 86400000);
+    el("#countdown").textContent = diff;
   }
 
-  /* ---------- окна ---------- */
+  /* ---------- GARLAND (realistic) ---------- */
+  function drawLights(){
+    // Main garland on house
+    let out = "";
+    const N = 20;
+    for (let i = 0; i < N; i++){
+      const x = 120 + i * (880 / (N - 1));
+      const y = 560 + Math.sin(i / (N - 1) * Math.PI * 3) * 14;
+      const col = i % 3 === 0 ? "#8f0500" : i % 3 === 1 ? "#562400" : "#044529";
+      out += '<circle cx="' + x + '" cy="' + y + '" r="5.5" fill="' + col + '" opacity=".12"/>';
+      out += '<circle class="bulb" cx="' + x + '" cy="' + y + '" r="5" fill="' + col + '"/>';
+    }
+    // Wire
+    let wire = '<path d="M110 558 Q300 572 500 558 T890 558" fill="none" stroke="#562400" stroke-width="1.8" stroke-opacity=".35"/>';
+    el("#lights").innerHTML = wire + out;
+
+    // Task page garland
+    let g = '<path d="M0 22 Q250 38 500 22 T1000 22" fill="none" stroke="#562400" stroke-width="1.6" stroke-opacity=".3"/>';
+    for (let i = 0; i < 24; i++){
+      const x = 20 + i * 41.5;
+      const y = 24 + Math.sin(i / 23 * Math.PI * 4) * 10;
+      const col = i % 3 === 0 ? "#8f0500" : i % 3 === 1 ? "#562400" : "#044529";
+      g += '<circle cx="' + x + '" cy="' + y + '" r="7.5" fill="' + col + '" opacity=".1"/>';
+      g += '<circle class="bulb" cx="' + x + '" cy="' + y + '" r="4" fill="' + col + '"/>';
+    }
+    el("#garland").innerHTML = g;
+  }
+
+  /* ---------- WINDOWS ---------- */
   function build(){
     const house = el("#house");
     CELLS.forEach(c => {
       const b = document.createElement("button");
       b.className = "win" + (done[c.d] ? " open done" : "");
-      b.style.left = ((c.x - c.w/2) / W * 100) + "%";
-      b.style.top = ((c.y - c.h/2) / H * 100) + "%";
-      b.style.width = (c.w / W * 100) + "%";
-      b.style.height = (c.h / H * 100) + "%";
-      b.dataset.day = c.d;
+      b.style.left = ((c.x - c.w/2) / 1122 * 100) + "%";
+      b.style.top = ((c.y - c.h/2) / 1402 * 100) + "%";
+      b.style.width = (c.w / 1122 * 100) + "%";
+      b.style.height = (c.h / 1402 * 100) + "%";
       b.setAttribute("aria-label", "Day " + c.d);
+      b.dataset.day = c.d;
       b.innerHTML = '<span class="flap"></span><span class="glow"></span>';
       b.addEventListener("click", () => {
         audio(); tear();
         b.classList.add("open");
-        setTimeout(() => openTask(c.d), 260);
+        setTimeout(() => openTask(c.d), 280);
       });
       house.appendChild(b);
     });
@@ -376,14 +429,13 @@ body::before{
 
   function updateCount(){
     const n = Object.keys(done).filter(k => done[k]).length;
-    el("#count").textContent = n;
+    el("#count").textContent = n + " / 31";
   }
 
-  /* ---------- страница задания ---------- */
+  /* ---------- TASK PAGE ---------- */
   function openTask(day){
     const d = DOORS[day - 1];
-    current = day;
-
+    const name = NAMES[day] || "Window " + day;
     const items = d.items && d.items.a
       ? '<ul class="tp-list">' + d.items.a.map(x => "<li>" + esc(x) + "</li>").join("") + "</ul>" : "";
     const shots = d.images && d.images.length
@@ -396,12 +448,12 @@ body::before{
 
     el("#tpInner").innerHTML =
       '<div class="tp-num">' + String(day).padStart(2, "0") + '</div>' +
-      '<div class="tp-title">' + esc(d.title) + '</div>' +
+      '<div class="tp-title-badge">' + esc(NAMES[day]) + '</div>' +
+      '<h2 class="tp-title">' + esc(d.title) + '</h2>' +
       '<p class="tp-text">' + esc(d.task) + '</p>' +
       items + shots + media +
-      '<div class="tp-levels"><button type="button" data-lvl="b1" class="on">B1</button><button type="button" data-lvl="b2">B2</button></div>' +
       '<p class="tp-level" id="tpLevel">' + esc(d.b1) + '</p>' +
-      '<div class="tp-answer"><textarea id="tpAns" placeholder="' + esc(d.prompt || "") + '"></textarea>' +
+      '<div class="tp-answer"><textarea id="tpAns" placeholder="' + esc(d.prompt || "Write your answer…") + '"></textarea>' +
       '<div class="tp-actions"><button class="tp-done' + (done[day] ? " on" : "") + '" id="tpDone" type="button">' +
       (done[day] ? "✓ done" : "mark as done") + '</button>' +
       '<span class="tp-hint" id="tpHint">saved</span></div></div>';
@@ -415,34 +467,24 @@ body::before{
     ta.value = ans[day] || "";
     ta.addEventListener("input", () => { ans[day] = ta.value; save(KA, ans); el("#tpHint").textContent = "saved"; });
 
-    document.querySelectorAll(".tp-levels button").forEach(b => {
-      b.addEventListener("click", () => {
-        document.querySelectorAll(".tp-levels button").forEach(x => x.classList.toggle("on", x === b));
-        el("#tpLevel").textContent = b.dataset.lvl === "b1" ? d.b1 : d.b2;
-      });
-    });
-
     el("#tpDone").addEventListener("click", () => {
       done[day] = !done[day];
       save(KD, done); pop();
       const btn = el("#tpDone");
       btn.classList.toggle("on", !!done[day]);
       btn.textContent = done[day] ? "✓ done" : "mark as done";
-      updateCount();
       const w = document.querySelector('.win[data-day="' + day + '"]');
       if (w) w.classList.toggle("done", !!done[day]);
     });
-
-    const w = document.querySelector('.win[data-day="' + day + '"]');
-    if (w) w.classList.add("open");
   }
 
   function closeTask(){
     el("#taskPage").hidden = true;
+    document.body.style.overflow = "";
     current = null;
   }
 
-  /* ---------- снег ---------- */
+  /* ---------- SNOW (3 layers, larger flakes) ---------- */
   const cv = el("#snow"), ctx = cv.getContext("2d");
   let flakes = [], SW = 0, SH = 0, dpr = Math.min(devicePixelRatio || 1, 2);
 
@@ -451,92 +493,284 @@ body::before{
     cv.width = SW * dpr; cv.height = SH * dpr;
     cv.style.width = SW + "px"; cv.style.height = SH + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const N = Math.round(SW / 16);
+    const N = Math.round(SW / 10);
     flakes = Array.from({length: N}, () => {
-      const layer = Math.random() < .55 ? 0 : (Math.random() < .7 ? 1 : 2);
+      const layer = Math.random() < .5 ? 0 : (Math.random() < .75 ? 1 : 2);
       return {
         layer,
         x: Math.random() * SW,
         y: Math.random() * SH,
-        r: layer === 0 ? .8 + Math.random() * .9 : layer === 1 ? 1.8 + Math.random() * 1.4 : 3.4 + Math.random() * 2.4,
-        vy: layer === 0 ? .18 + Math.random() * .25 : layer === 1 ? .45 + Math.random() * .4 : .85 + Math.random() * .7,
-        vx: (Math.random() - .5) * (.1 + layer * .12),
-        ph: Math.random() * Math.PI * 2,
-        sp: 12 + Math.random() * 20
+        r: layer === 0 ? 1.4 + Math.random() * 1.6 : layer === 1 ? 2.8 + Math.random() * 2 : 4.8 + Math.random() * 3.5,
+        vy: layer === 0 ? .2 + Math.random() * .25 : layer === 1 ? .5 + Math.random() * .45 : 1.0 + Math.random() * .8,
+        vx: (Math.random() - .5) * (.14 + layer * .16),
+        ph: Math.random() * Math.PI * 2
       };
     });
   }
 
-  function flakeArm(x, y, r, rot){
-    ctx.beginPath();
-    for (let i = 0; i < 3; i++){
-      const a = rot + i * Math.PI / 3;
-      ctx.moveTo(x - Math.cos(a) * r, y - Math.sin(a) * r);
-      ctx.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r);
+  function drawFlake(f, t){
+    if (f.layer === 2){
+      ctx.strokeStyle = "rgba(255,255,255,.95)";
+      ctx.lineWidth = 1.4;
+      const a = t / 2200 + f.ph;
+      ctx.beginPath();
+      for (let i = 0; i < 3; i++){
+        const a3 = a + i * Math.PI / 3;
+        ctx.moveTo(f.x - Math.cos(a3) * f.r, f.y - Math.sin(a3) * f.r);
+        ctx.lineTo(f.x + Math.cos(a3) * f.r, f.y + Math.sin(a3) * f.r);
+      }
+      ctx.stroke();
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r * .18, 0, 7);
+      ctx.fillStyle = "rgba(255,255,255,.95)"; ctx.fill();
+    } else if (f.layer === 1){
+      ctx.strokeStyle = "rgba(255,255,255,.8)";
+      ctx.lineWidth = 1.1;
+      const a = f.ph;
+      ctx.beginPath();
+      for (let i = 0; i < 3; i++){
+        const a3 = a + i * Math.PI / 3;
+        ctx.moveTo(f.x - Math.cos(a3) * f.r, f.y - Math.sin(a3) * f.r);
+        ctx.lineTo(f.x + Math.cos(a3) * f.r, f.y + Math.sin(a3) * f.r);
+      }
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = "rgba(255,255,255,.65)";
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 7); ctx.fill();
     }
-    ctx.stroke();
   }
 
   function snowLoop(t){
     ctx.clearRect(0, 0, SW, SH);
     for (const f of flakes){
       f.y += f.vy;
-      f.x += f.vx + Math.sin((t / 2200) + f.ph) * (.08 + f.layer * .12);
-      if (f.y > SH - 16){ f.y = -10; f.x = Math.random() * SW; }
-      if (f.x < -12) f.x = SW + 12;
-      if (f.x > SW + 12) f.x = -12;
-
-      if (f.layer === 2){
-        ctx.strokeStyle = "rgba(255,255,255,.92)";
-        ctx.lineWidth = 1.1;
-        flakeArm(f.x, f.y, f.r, t / 2600 + f.ph);
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, f.r * .18, 0, 7);
-        ctx.fillStyle = "rgba(255,255,255,.95)";
-        ctx.fill();
-      } else if (f.layer === 1){
-        ctx.strokeStyle = "rgba(255,255,255,.75)";
-        ctx.lineWidth = .9;
-        flakeArm(f.x, f.y, f.r, f.ph);
-      } else {
-        ctx.fillStyle = "rgba(255,255,255,.55)";
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, f.r, 0, 7);
-        ctx.fill();
-      }
+      f.x += f.vx + Math.sin((t / 1900) + f.ph) * (.12 + f.layer * .16);
+      if (f.y > SH - 12){ f.y = -10; f.x = Math.random() * SW; }
+      if (f.x < -14) f.x = SW + 14;
+      if (f.x > SW + 14) f.x = -14;
+      drawFlake(f, t);
     }
     requestAnimationFrame(snowLoop);
   }
 
-  el("#bank").addEventListener("click", (e) => {
-    audio(); pop();
-    balls++; save(KB, balls);
-    el("#snowballs").textContent = balls;
-    el("#snowballs").parentElement.classList.add("bump");
-    setTimeout(() => el("#snowballs").parentElement.classList.remove("bump"), 300);
-    const p = document.createElement("div");
-    p.className = "puff";
-    p.style.left = e.clientX + "px";
-    p.style.top = e.clientY + "px";
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 520);
+  /* ---------- SNOWBALL DRAG ---------- */
+  let snowball = null, dragStart = null, dragCurrent = null;
+  const bankEl = el("#bank");
+
+  bankEl.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    dragStart = { x: e.clientX, y: e.clientY };
+    dragCurrent = { x: e.clientX, y: e.clientY };
+    snowball = document.createElement("div");
+    snowball.className = "snowball active";
+    snowball.style.left = e.clientX + "px";
+    snowball.style.top = e.clientY + "px";
+    document.body.appendChild(snowball);
+    e.preventDefault();
   });
 
-  /* ---------- вписать в экран ---------- */
-  function fit(){
-    const vh = innerHeight, vw = innerWidth;
-    const top = vw <= 700 ? 46 : 54;
-    const k = Math.min((vw - 16) / W, (vh - top - 10) / H);
-    const house = el("#house");
-    house.style.top = top + "px";
-    house.style.transform = "translateX(-50%) scale(" + k + ")";
+  window.addEventListener("pointermove", (e) => {
+    if (!dragStart) return;
+    dragCurrent = { x: e.clientX, y: e.clientY };
+    if (snowball){
+      snowball.style.left = e.clientX + "px";
+      snowball.style.top = e.clientY + "px";
+    }
+  });
+
+  window.addEventListener("pointerup", (e) => {
+    if (!dragStart) return;
+    const dx = e.clientX - dragStart.x;
+    const dy = e.clientY - dragStart.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist > 30 && snowball){
+      // throw toward click
+      const vx = dx * 1.8, vy = dy * 1.8 - 200;
+      snowball.classList.add("thrown");
+      snowball.style.transform = "translate(" + vx + "px, " + vy + "px) scale(1.4)";
+      snowball.style.opacity = "0";
+      // check hit
+      const rect = snowball.getBoundingClientRect();
+      document.querySelectorAll(".win").forEach(w => {
+        const r = w.getBoundingClientRect();
+        if (rect.left < r.right && rect.right > r.left && rect.top < r.bottom && rect.bottom > r.top){
+          const day = +w.dataset.day;
+          if (!done[day]){
+            audio(); tear();
+            w.classList.add("open");
+            setTimeout(() => openTask(day), 300);
+          }
+        }
+      });
+      setTimeout(() => snowball.remove(), 500);
+    } else if (snowball){
+      snowball.remove();
+    }
+    dragStart = null; dragCurrent = null; snowball = null;
+  });
+
+  /* ---------- HOUSE SHADOW ---------- */
+  function drawHouseShadow(){
+    el("#houseShadow").innerHTML =
+      '<defs><filter id="gs" x="-30%" y="-60%" width="160%" height="260%">' +
+      '<feGaussianBlur stdDeviation="28"/></filter></defs>' +
+      '<ellipse cx="561" cy="1332" rx="360" ry="28" fill="#562400" opacity=".22" filter="url(#gs)"/>';
   }
 
+  /* ---------- BUILD ---------- */
+  function build(){
+    drawLights(); drawHouseShadow();
+    const house = el("#house");
+    CELLS.forEach(c => {
+      const b = document.createElement("button");
+      b.className = "win" + (done[c.d] ? " open done" : "");
+      b.style.left = ((c.x - c.w/2) / 1122 * 100) + "%";
+      b.style.top = ((c.y - c.h/2) / 1402 * 100) + "%";
+      b.style.width = (c.w / 1122 * 100) + "%";
+      b.style.height = (c.h / 1402 * 100) + "%";
+      b.setAttribute("aria-label", "Day " + c.d);
+      b.dataset.day = c.d;
+      b.innerHTML = '<span class="flap"></span><span class="glow"></span>';
+      b.addEventListener("click", () => {
+        audio(); tear();
+        b.classList.add("open");
+        setTimeout(() => openTask(c.d), 280);
+      });
+      house.appendChild(b);
+    });
+    updateCount();
+  }
+
+  function updateCount(){
+    const n = Object.keys(done).filter(k => done[k]).length;
+    el("#count").textContent = n + " / 31";
+  }
+
+  /* ---------- TASK PAGE ---------- */
+  function openTask(day){
+    const d = DOORS[day - 1];
+    const name = NAMES[day] || "Window " + day;
+    const items = d.items && d.items.a
+      ? '<ul class="tp-list">' + d.items.a.map(x => "<li>" + esc(x) + "</li>").join("") + "</ul>" : "";
+    const shots = d.images && d.images.length
+      ? '<div class="tp-shots">' + d.images.map(im => '<a href="' + esc(im.src) + '" target="_blank" rel="noopener"><img src="' + esc(im.src) + '" alt=""></a>').join("") + "</div>" : "";
+    const media = (d.media && d.media.length) || (d.links && d.links.length)
+      ? '<div class="tp-links">' +
+        (d.media || []).map(m => '<a href="' + esc(m.url) + '" target="_blank" rel="noopener">' + esc(m.label) + "</a>").join("") +
+        (d.links || []).map(l => '<a href="' + esc(l.href) + '" target="_blank" rel="noopener">' + esc(l.label) + "</a>").join("") +
+        "</div>" : "";
+
+    el("#tpInner").innerHTML =
+      '<div class="tp-num">' + String(day).padStart(2, "0") + '</div>' +
+      '<div class="tp-title-badge">' + esc(NAMES[day]) + '</div>' +
+      '<h2 class="tp-title">' + esc(d.title) + '</h2>' +
+      '<p class="tp-text">' + esc(d.task) + '</p>' +
+      items + shots + media +
+      '<p class="tp-level" id="tpLevel">' + esc(d.b1) + '</p>' +
+      '<div class="tp-answer"><textarea id="tpAns" placeholder="' + esc(d.prompt || "Write your answer…") + '"></textarea>' +
+      '<div class="tp-actions"><button class="tp-done' + (done[day] ? " on" : "") + '" id="tpDone" type="button">' +
+      (done[day] ? "✓ done" : "mark as done") + '</button>' +
+      '<span class="tp-hint" id="tpHint">saved</span></div></div>';
+
+    const page = el("#taskPage");
+    page.hidden = false;
+    page.scrollTop = 0;
+    document.body.style.overflow = "hidden";
+
+    const ta = el("#tpAns");
+    ta.value = ans[day] || "";
+    ta.addEventListener("input", () => { ans[day] = ta.value; save(KA, ans); el("#tpHint").textContent = "saved"; });
+
+    el("#tpDone").addEventListener("click", () => {
+      done[day] = !done[day];
+      save(KD, done); pop();
+      const btn = el("#tpDone");
+      btn.classList.toggle("on", !!done[day]);
+      btn.textContent = done[day] ? "✓ done" : "mark as done";
+      const w = document.querySelector('.win[data-day="' + day + '"]');
+      if (w) w.classList.toggle("done", !!done[day]);
+    });
+  }
+
+  function closeTask(){
+    el("#taskPage").hidden = true;
+    document.body.style.overflow = "";
+    current = null;
+  }
+
+  /* ---------- SNOW LOOP ---------- */
+  const cv = el("#snow"), ctx = cv.getContext("2d");
+  let flakes = [], SW = 0, SH = 0, dpr = Math.min(devicePixelRatio || 1, 2);
+
+  function resizeSnow(){
+    SW = innerWidth; SH = innerHeight;
+    cv.width = SW * dpr; cv.height = SH * dpr;
+    cv.style.width = SW + "px"; cv.style.height = SH + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const N = Math.round(SW / 10);
+    flakes = Array.from({length: N}, () => {
+      const layer = Math.random() < .5 ? 0 : (Math.random() < .75 ? 1 : 2);
+      return {
+        layer,
+        x: Math.random() * SW,
+        y: Math.random() * SH,
+        r: layer === 0 ? 1.4 + Math.random() * 1.6 : layer === 1 ? 2.8 + Math.random() * 2 : 4.8 + Math.random() * 3.5,
+        vy: layer === 0 ? .2 + Math.random() * .25 : layer === 1 ? .5 + Math.random() * .45 : 1.0 + Math.random() * .8,
+        vx: (Math.random() - .5) * (.14 + layer * .16),
+        ph: Math.random() * Math.PI * 2
+      };
+    });
+  }
+
+  function drawFlake(f, t){
+    if (f.layer === 2){
+      ctx.strokeStyle = "rgba(255,255,255,.95)";
+      ctx.lineWidth = 1.4;
+      const a = t / 2200 + f.ph;
+      ctx.beginPath();
+      for (let i = 0; i < 3; i++){
+        const a3 = a + i * Math.PI / 3;
+        ctx.moveTo(f.x - Math.cos(a3) * f.r, f.y - Math.sin(a3) * f.r);
+        ctx.lineTo(f.x + Math.cos(a3) * f.r, f.y + Math.sin(a3) * f.r);
+      }
+      ctx.stroke();
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r * .18, 0, 7);
+      ctx.fillStyle = "rgba(255,255,255,.95)"; ctx.fill();
+    } else if (f.layer === 1){
+      ctx.strokeStyle = "rgba(255,255,255,.8)";
+      ctx.lineWidth = 1.1;
+      const a = f.ph;
+      ctx.beginPath();
+      for (let i = 0; i < 3; i++){
+        const a3 = a + i * Math.PI / 3;
+        ctx.moveTo(f.x - Math.cos(a3) * f.r, f.y - Math.sin(a3) * f.r);
+        ctx.lineTo(f.x + Math.cos(a3) * f.r, f.y + Math.sin(a3) * f.r);
+      }
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = "rgba(255,255,255,.65)";
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 7); ctx.fill();
+    }
+  }
+
+  function snowLoop(t){
+    ctx.clearRect(0, 0, SW, SH);
+    for (const f of flakes){
+      f.y += f.vy;
+      f.x += f.vx + Math.sin((t / 1900) + f.ph) * (.12 + f.layer * .16);
+      if (f.y > SH - 12){ f.y = -10; f.x = Math.random() * SW; }
+      if (f.x < -14) f.x = SW + 14;
+      if (f.x > SW + 14) f.x = -14;
+      drawFlake(f, t);
+    }
+    requestAnimationFrame(snowLoop);
+  }
+
+  /* ---------- INIT ---------- */
   document.addEventListener("DOMContentLoaded", () => {
-    build(); drawLights(); fit(); resizeSnow(); loadTear();
-    el("#snowballs").textContent = balls;
+    build(); drawLights(); drawHouseShadow(); fit(); resizeSnow(); loadTear(); updateCountdown();
     requestAnimationFrame(snowLoop);
     window.addEventListener("resize", fit);
+    setInterval(updateCountdown, 30000);
 
     el("#back").addEventListener("click", closeTask);
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeTask(); });
@@ -546,12 +780,6 @@ body::before{
       document.querySelectorAll(".win").forEach(w => w.classList.remove("open", "done"));
       updateCount();
     });
-
-    const peek = new URLSearchParams(location.search).get("peek");
-    if (peek){
-      const w = document.querySelectorAll(".win")[+peek];
-      if (w){ w.classList.add("open"); const f = w.querySelector(".flap"); f.style.transition = "none"; f.style.transform = "rotateY(-118deg)"; }
-    }
 
     const q = new URLSearchParams(location.search).get("d");
     if (q && +q >= 1 && +q <= 31) setTimeout(() => openTask(+q), 300);
