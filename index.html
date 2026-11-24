@@ -45,11 +45,128 @@ body::before{
 .countdown .label{color:var(--green);font-weight:400;font-size:12px}
 .countdown .num{font-size:28px;font-weight:400;color:var(--red);letter-spacing:.06em;font-variant-numeric:tabular-nums;text-shadow:0 1px 0 rgba(252,232,194,.8)}
 
+/* ---------- STAGE ---------- */
+.stage{position:fixed;inset:0;z-index:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding-top:56px}
+
 /* ---------- HOUSE ---------- */
-.stage{position:fixed;inset:0;z-index:1;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;padding-top:48px}
-.house{width:1122px;height:1402px;transform-origin:top center;flex-shrink:0}
+.house-wrapper{position:relative;display:flex;justify-content:center;flex-shrink:0}
+.house{position:relative;width:1122px;height:1402px;transform-origin:top center}
 .house img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 30px 60px -30px rgba(86,36,0,.45)}
 .house canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+/* ---------- SNOW & DRIFTS ---------- */
+#snow{position:fixed;inset:0;z-index:40;pointer-events:none}
+.bank{position:fixed;left:0;right:0;bottom:0;height:44px;z-index:12;cursor:crosshair}
+.bank svg{width:100%;height:100%;display:block}
+.snowball{
+  position:fixed;z-index:41;width:28px;height:28px;border-radius:50%;background:#fff;
+  border:1px solid rgba(86,36,0,.22);pointer-events:none;opacity:0;
+  box-shadow:0 2px 6px rgba(86,36,0,.18);
+  transition:transform .12s, opacity .12s;
+}
+.snowball.active{opacity:1}
+.snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
+
+/* ---------- CHIP PROGRESS ---------- */
+.chip{position:fixed;left:12px;bottom:12px;z-index:22;
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);background:rgba(252,232,194,.88);
+  border:1px dotted rgba(143,5,0,.3);border-radius:999px;padding:6px 12px;
+  backdrop-filter:blur(3px)}
+.chip b{color:var(--red);font-weight:400}
+.chip .rst{margin-left:6px;color:rgba(86,36,0,.4);cursor:pointer;border:0;background:none;font:inherit;letter-spacing:.14em}
+.chip .rst:hover{color:var(--red)}
+
+/* ---------- GARLAND ---------- */
+.bulb{animation:blink 3s infinite}
+.bulb:nth-child(2n){animation-delay:.6s}
+.bulb:nth-child(3n){animation-delay:1.2s}
+@keyframes blink{0%,68%,100%{opacity:1}76%,84%{opacity:.18}}
+@media(prefers-reduced-motion:reduce){.bulb{animation:none}}
+
+/* ---------- TASK PAGE ---------- */
+.task-page{
+  position:fixed;inset:0;z-index:30;background:var(--paper);overflow-y:auto;
+  animation:pageIn .3s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.task-page .garland{position:absolute;left:0;right:0;top:0;height:52px;pointer-events:none;opacity:.95}
+.tp-inner{position:relative;max-width:840px;margin:0 auto;padding:64px 24px 120px}
+.back{
+  position:fixed;left:14px;top:14px;z-index:32;font-family:var(--mono);font-size:9px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--red);
+  background:rgba(252,232,194,.92);border:1px dotted rgba(143,5,0,.35);border-radius:999px;
+  cursor:pointer;padding:7px 13px;
+}
+.back:hover{color:#6b0400;background:var(--cream)}
+
+.tp-title-badge{
+  display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--green);background:rgba(4,69,41,.08);
+  border:1px solid rgba(4,69,41,.2);border-radius:999px;padding:4px 12px;margin-bottom:14px;
+}
+.tp-num{font-family:var(--mono);font-size:clamp(52px,8vw,96px);line-height:.9;color:var(--red);letter-spacing:.02em}
+.tp-title{font-family:var(--mono);font-size:clamp(15px,1.6vw,18px);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--green);margin:14px 0 24px}
+.tp-text{font-family:var(--serif);font-size:clamp(19px,2.2vw,27px);line-height:1.6;margin:0 0 28px;max-width:780px}
+.tp-text b{color:var(--red);font-weight:400}
+
+.tp-list{margin:0 0 28px;padding:0;list-style:none;max-width:780px}
+.tp-list li{font-family:var(--serif);font-size:clamp(16px,1.8vw,21px);line-height:1.7;color:var(--ink);
+  padding-left:22px;position:relative}
+.tp-list li::before{content:"—";position:absolute;left:0;color:var(--green)}
+
+.tp-shots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 26px;max-width:780px}
+.tp-shots a{display:block;aspect-ratio:4/3;overflow:hidden;border:1px solid rgba(143,5,0,.3);border-radius:4px}
+.tp-shots img{width:100%;height:100%;object-fit:cover;display:block}
+
+.tp-links{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 28px}
+.tp-links a{font-size:9px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--green);
+  border:1px solid rgba(4,69,41,.28);border-radius:999px;padding:6px 11px}
+.tp-links a:hover{background:rgba(4,69,41,.06)}
+
+.tp-level{font-family:var(--serif);font-size:clamp(16px,1.8vw,21px);line-height:1.6;color:var(--ink);
+  border-left:2px solid var(--green);padding-left:18px;margin:0 0 38px;max-width:780px}
+
+.tp-answer{max-width:780px}
+.tp-answer textarea{
+  width:100%;min-height:150px;resize:vertical;font-family:var(--serif);font-size:clamp(16px,1.9vw,20px);
+  line-height:1.6;color:var(--ink);background:#FDFAF2;border:1.5px dotted rgba(143,5,0,.4);border-radius:4px;padding:16px 18px;outline:none
+}
+.tp-answer textarea:focus{border-style:solid;border-color:var(--red)}
+.tp-actions{display:flex;align-items:center;gap:14px;margin-top:18px;flex-wrap:wrap}
+.tp-done{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  padding:10px 20px;border-radius:999px;border:1px solid var(--red);background:var(--red);color:var(--cream);cursor:pointer}
+.tp-done.on{background:var(--green);border-color:var(--green)}
+.tp-hint{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+
+@media(max-width:700px){
+  .tp-inner{padding:56px 18px 110px}
+  .tp-shots{grid-template-columns:1fr 1fr}
+  .bank{height:32px}
+}
+
+/* ---------- CHIP PROGRESS ---------- */
+.chip{position:fixed;left:12px;bottom:12px;z-index:22;
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);background:rgba(252,232,194,.88);
+  border:1px dotted rgba(143,5,0,.3);border-radius:999px;padding:6px 12px;
+  backdrop-filter:blur(3px)}
+.chip b{color:var(--red);font-weight:400}
+.chip .rst{margin-left:6px;color:rgba(86,36,0,.4);cursor:pointer;border:0;background:none;font:inherit;letter-spacing:.14em}
+.chip .rst:hover{color:var(--red)}
+
+/* ---------- SNOWBALL DRAG ---------- */
+.snowball{
+  position:fixed;z-index:41;width:28px;height:28px;border-radius:50%;background:#fff;
+  border:1px solid rgba(86,36,0,.22);pointer-events:none;opacity:0;
+  box-shadow:0 2px 6px rgba(86,36,0,.18);
+  transition:transform .12s, opacity .12s;
+}
+.snowball.active{opacity:1}
+.snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 
 /* ---------- WINDOWS ---------- */
 .win{
@@ -101,28 +218,13 @@ body::before{
 }
 .win.done .mark{opacity:1}
 
-/* ---------- SNOW & DRIFTS ---------- */
-#snow{position:fixed;inset:0;z-index:40;pointer-events:none}
-.bank{position:fixed;left:0;right:0;bottom:0;height:44px;z-index:12;cursor:crosshair}
-.bank svg{width:100%;height:100%;display:block}
-.snowball{
-  position:fixed;z-index:41;width:28px;height:28px;border-radius:50%;background:#fff;
-  border:1px solid rgba(86,36,0,.22);pointer-events:none;opacity:0;
-  box-shadow:0 2px 6px rgba(86,36,0,.18);
-  transition:transform .12s, opacity .12s;
-}
-.snowball.active{opacity:1}
-.snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
-
-/* ---------- COUNTDOWN CHIP ---------- */
-.chip{
-  position:fixed;left:12px;bottom:12px;z-index:22;
+/* ---------- CHIP PROGRESS ---------- */
+.chip{position:fixed;left:12px;bottom:12px;z-index:22;
   display:flex;align-items:center;gap:10px;
   font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink-soft);background:rgba(252,232,194,.88);
   border:1px dotted rgba(143,5,0,.3);border-radius:999px;padding:6px 12px;
-  backdrop-filter:blur(3px);
-}
+  backdrop-filter:blur(3px)}
 .chip b{color:var(--red);font-weight:400}
 .chip .rst{margin-left:6px;color:rgba(86,36,0,.4);cursor:pointer;border:0;background:none;font:inherit;letter-spacing:.14em}
 .chip .rst:hover{color:var(--red)}
@@ -223,12 +325,13 @@ body::before{
 <canvas id="snow"></canvas>
 
 <div class="stage" id="stage">
-  <div class="house" id="house">
+  <div class="house-wrapper" id="houseWrapper">
+    <div class="house" id="house">
     <img src="facade.jpg" alt="Hand-drawn advent house">
     <svg class="lights" id="lights" viewBox="0 0 1122 1402" aria-hidden="true"></svg>
     <svg class="houseshadow" id="houseShadow" viewBox="0 0 1122 1402" aria-hidden="true"></svg>
+    </div>
   </div>
-</div>
 
 <div class="bank" id="bank" title="Drag to roll a snowball">
   <svg viewBox="0 0 1000 48" preserveAspectRatio="none">
@@ -406,7 +509,7 @@ body::before{
 
   /* ---------- WINDOWS ---------- */
   function build(){
-    const house = el("#house");
+    const houseWrapper = el("#houseWrapper");
     CELLS.forEach(c => {
       const b = document.createElement("button");
       b.className = "win" + (done[c.d] ? " open done" : "");
@@ -422,7 +525,7 @@ body::before{
         b.classList.add("open");
         setTimeout(() => openTask(c.d), 280);
       });
-      house.appendChild(b);
+      houseWrapper.appendChild(b);
     });
     updateCount();
   }
@@ -619,7 +722,7 @@ body::before{
   /* ---------- BUILD ---------- */
   function build(){
     drawLights(); drawHouseShadow();
-    const house = el("#house");
+    const houseWrapper = el("#houseWrapper");
     CELLS.forEach(c => {
       const b = document.createElement("button");
       b.className = "win" + (done[c.d] ? " open done" : "");
@@ -635,7 +738,7 @@ body::before{
         b.classList.add("open");
         setTimeout(() => openTask(c.d), 280);
       });
-      house.appendChild(b);
+      houseWrapper.appendChild(b);
     });
     updateCount();
   }
