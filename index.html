@@ -282,7 +282,7 @@ body::before{
 .snowball.active{opacity:1}
 .snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 </style>
-<link rel="stylesheet" href="tree.css?v=snow-workshop">
+<link rel="stylesheet" href="tree.css?v=task-columns">
 </head>
 <body>
 
@@ -641,13 +641,13 @@ body::before{
         "</div>" : "";
 
     el("#tpInner").innerHTML =
-      '<div class="tp-num">' + String(day).padStart(2, "0") + '</div>' +
+      '<div class="tp-reading"><header class="tp-heading"><div class="tp-num">' + String(day).padStart(2, "0") + '</div>' +
       '<div class="tp-title-badge">' + esc(NAMES[day]) + '</div>' +
-      '<h2 class="tp-title">' + esc(d.title) + '</h2>' +
+      '<h2 class="tp-title">' + esc(d.title) + '</h2></header>' +
       '<p class="tp-text">' + esc(d.task) + '</p>' +
       items + shots + media +
-      '<p class="tp-level" id="tpLevel">' + esc(d.b1) + '</p>' +
-      '<div class="tp-answer"><textarea id="tpAns" placeholder="' + esc(d.prompt || "Write your answer…") + '"></textarea>' +
+      '<p class="tp-level" id="tpLevel">' + esc(d.b1) + '</p></div>' +
+      '<div class="tp-answer"><textarea id="tpAns" aria-label="Your answer" placeholder="' + esc(d.prompt || "Write your answer…") + '"></textarea>' +
       '<div class="tp-actions"><button class="tp-done' + (done[day] ? " on" : "") + '" id="tpDone" type="button">' +
       (done[day] ? "✓ done" : "mark as done") + '</button>' +
       '<span class="tp-hint" id="tpHint">saved</span></div></div>';

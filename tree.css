@@ -148,9 +148,9 @@
 .tree-tools { background: transparent; mix-blend-mode: multiply }
 .tree-home:focus-visible { outline: 2px dotted var(--red); outline-offset: 4px }
 .task-page.framed {
-  --frame-x: max(12vw, 24px);
-  --frame-top: max(9dvh, 20px);
-  --frame-bottom: max(10dvh, 22px);
+  --frame-x: max(10vw, 19px);
+  --frame-top: max(8dvh, 18px);
+  --frame-bottom: max(8dvh, 18px);
   background: #fff;
   isolation: isolate;
   overflow: hidden;
@@ -170,23 +170,54 @@
 .task-page.framed .garland {
   inset: var(--frame-top) var(--frame-x) auto;
   width: calc(100% - 2 * var(--frame-x));
-  height: 30px;
+  height: 23px;
 }
 .task-page.framed .back {
-  top: calc(var(--frame-top) + 32px);
+  position: absolute;
+  top: calc(var(--frame-top) + 26px);
   left: var(--frame-x);
+  min-height: 32px;
+  padding: 4px 9px;
 }
 .framed .task-sheet {
   position: absolute;
-  inset: calc(var(--frame-top) + 80px) var(--frame-x) var(--frame-bottom);
+  inset: calc(var(--frame-top) + 63px) var(--frame-x) var(--frame-bottom);
   overflow: auto;
   overscroll-behavior: contain;
 }
-.framed .tp-inner { width: min(780px, 100%); padding: 8px 6px 18px }
-.framed .tp-title { font-size: clamp(37px, 6vw, 67px); margin-bottom: 15px }
-.framed .tp-title-badge { font-size: clamp(24px, 4vw, 37px) }
-.framed .tp-text, .framed .tp-level { font-size: clamp(16px, 2.3vw, 22px) }
-.framed .tp-answer textarea { min-height: 100px; font-size: clamp(16px, 2vw, 20px) }
+.framed .tp-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(12px, 3vw, 44px);
+  width: min(1180px, 100%);
+  min-height: 100%;
+  padding: 3px 5px;
+}
+.tp-reading, .tp-answer { min-width: 0 }
+.tp-heading { margin-bottom: 10px }
+.framed .tp-num { font-size: clamp(24px, 6dvh, 52px) }
+.framed .tp-title { font-size: clamp(28px, 7dvh, 64px); margin: 2px 0 0 }
+.framed .tp-title-badge { font-size: clamp(19px, 4.5dvh, 34px); margin: 3px 0 0 }
+.framed :is(.tp-text, .tp-level, .tp-list li, .tp-answer textarea) {
+  font-size: clamp(14px, 2.7dvh, 19px);
+  line-height: 1.35;
+}
+.framed :is(.tp-text, .tp-level, .tp-list, .tp-links, .tp-shots) { margin-bottom: 10px }
+.framed .tp-list { columns: 2; column-gap: 14px }
+.framed .tp-list li { padding-left: 13px; break-inside: avoid }
+.framed .tp-shots a { height: clamp(48px, 12dvh, 112px); aspect-ratio: auto }
+.framed .tp-links a { min-height: 30px; padding: 3px 8px; font-size: 13px }
+.framed .tp-answer textarea { height: clamp(90px, 24dvh, 200px); min-height: 0; resize: none; padding: 9px 11px }
+.framed .tp-actions { margin-top: 6px; gap: 6px 10px }
+.framed .tp-done { min-height: 34px; padding: 4px 10px }
+@media (max-width: 680px) {
+  .framed .tp-inner { grid-template-columns: minmax(0, 1fr); align-content: center; gap: 6px }
+  .framed .tp-num { font-size: 24px }
+  .framed .tp-title { font-size: clamp(25px, 8vw, 39px) }
+  .framed .tp-title-badge { font-size: clamp(18px, 5vw, 26px) }
+  .framed .tp-answer textarea { height: clamp(54px, 12dvh, 88px) }
+}
 .task-page .tp-title, .task-page .tp-title-badge { -webkit-text-stroke: .35px currentColor }
 @media (max-width: 660px) {
   .stage { grid-template-columns: minmax(0, 1fr) minmax(0, 61%); column-gap: 4px }
