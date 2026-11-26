@@ -282,6 +282,7 @@ body::before{
 .snowball.active{opacity:1}
 .snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 </style>
+<link rel="stylesheet" href="tree.css">
 </head>
 <body>
 
@@ -314,9 +315,44 @@ body::before{
 <section class="task-page" id="taskPage" hidden>
   <svg class="garland" id="garland" viewBox="0 0 1000 52" preserveAspectRatio="none" aria-hidden="true"></svg>
   <button class="back" id="back" type="button">← the house</button>
-  <div class="tp-inner" id="tpInner"></div>
+  <div class="task-sheet"><div class="tp-inner" id="tpInner"></div></div>
 </section>
 
+<button class="tree-button tree-home" id="treeHome" type="button" hidden>Christmas tree</button>
+<section class="tree-page" id="treePage" aria-labelledby="treeTitle" hidden>
+  <h1 id="treeTitle">Christmas Tree</h1>
+  <button class="tree-button tree-back" id="treeBack" type="button">← Back</button>
+  <button class="tree-tools" id="treeTools" type="button" aria-label="Draw an ornament">
+    <img src="assets/pencil.png" alt="">
+  </button>
+  <div class="tree-branches" id="treeBranches">
+    <img src="assets/tree.png" alt="Christmas tree">
+  </div>
+  <p class="tree-status" id="treeStatus" role="status"></p>
+</section>
+<dialog class="ornament-editor" id="ornamentEditor" aria-labelledby="ornamentTitle">
+  <h2 id="ornamentTitle">Draw an Ornament</h2>
+  <div class="editor-controls">
+    <label for="ornamentTemplate">Template</label>
+    <select class="tree-button" id="ornamentTemplate"></select>
+  </div>
+  <div class="editor-paper">
+    <svg viewBox="0 0 240 240" aria-hidden="true">
+      <path id="ornamentGuide" fill="none" stroke="#174d1a" stroke-width="1.5" stroke-dasharray="3 4"/>
+    </svg>
+    <canvas id="ornamentCanvas" width="240" height="240" aria-label="Drawing paper"></canvas>
+  </div>
+  <div class="editor-controls" id="ornamentPalette" aria-label="Pencil colours"></div>
+  <div class="editor-controls">
+    <button class="tree-button" id="treeEraser" type="button" aria-pressed="false">Eraser</button>
+    <button class="tree-button" id="treeUndo" type="button">Undo</button>
+    <button class="tree-button" id="treeCancel" type="button">Close</button>
+    <button class="tree-button" id="treeHang" type="button">Hang it up</button>
+  </div>
+  <output id="editorStatus" role="status"></output>
+</dialog>
+
+<script src="tree.js"></script>
 <script src="data.js"></script>
 <script>
 (function(){
@@ -605,8 +641,10 @@ body::before{
       '<span class="tp-hint" id="tpHint">saved</span></div></div>';
 
     const page = el("#taskPage");
+    window.AdventTree?.frame(page, day);
     page.hidden = false;
     page.scrollTop = 0;
+    el("#tpInner").scrollTop = 0;
     document.body.style.overflow = "hidden";
 
     const ta = el("#tpAns");
@@ -622,6 +660,7 @@ body::before{
       const w = document.querySelector('.win[data-day="' + day + '"]');
       if (w) w.classList.toggle("done", !!done[day]);
       updateCount();
+      if (done[day]) window.AdventTree?.open(day, true);
     });
   }
 
@@ -706,8 +745,16 @@ body::before{
     window.addEventListener("resize", resizeSnow);
     setInterval(updateCountdown, 30000);
 
+    const treeHome = el("#treeHome");
+    if (window.AdventTree) {
+      treeHome.hidden = false;
+      treeHome.addEventListener("click", () => {
+        const days = Object.keys(done).filter(day => done[day]).map(Number);
+        window.AdventTree.open(Math.max(0, ...days));
+      });
+    }
     el("#back").addEventListener("click", closeTask);
-    document.addEventListener("keydown", e => { if (e.key === "Escape") closeTask(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && el("#treePage").hidden) closeTask(); });
 
     el("#reset").addEventListener("click", () => {
       done = {}; ans = {}; save(KD, done); save(KA, ans);
