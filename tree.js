@@ -3,10 +3,8 @@
 
   const byId = id => document.getElementById(id);
   const frames = [
-    ["red-corners", 1131, 1600], ["green-loops", 960, 1208], ["checker", 1200, 1621],
-    ["candy-stripe", 768, 1024], ["red-stars", 454, 640], ["holly", 1200, 1914],
-    ["wavy-candy", 768, 1024], ["fine-loops", 736, 1308], ["green-wave", 532, 666],
-    ["blue-loops", 794, 1123], ["lights", 490, 612]
+    "red-corners", "green-loops", "checker", "candy-stripe", "red-stars", "holly",
+    "wavy-candy", "fine-loops", "green-wave", "blue-loops", "lights"
   ];
   const palette = [
     ["Holly berry", "#AD1010"], ["Pink", "#F4C5C5"], ["Gilded glow", "#D1A33C"],
@@ -48,18 +46,19 @@
   }
 
   function displayTree() {
-    const branch = byId("treeBranches");
-    branch.querySelectorAll(".tree-ornament").forEach(item => item.remove());
-    for (let n = 1; n <= 31; n++) {
-      const artwork = read(n);
-      if (!artwork) continue;
-      const image = new Image();
-      image.src = artwork.png;
-      image.alt = "Day " + n + " ornament";
-      image.className = "tree-ornament";
-      image.style.left = slots[n - 1].x + "%";
-      image.style.top = slots[n - 1].y + "%";
-      branch.append(image);
+    for (const branch of [byId("treeBranches"), byId("homeBranches")]) {
+      branch.querySelectorAll(".tree-ornament").forEach(item => item.remove());
+      for (let n = 1; n <= 31; n++) {
+        const artwork = read(n);
+        if (!artwork) continue;
+        const image = new Image();
+        image.src = artwork.png;
+        image.alt = "Day " + n + " ornament";
+        image.className = "tree-ornament";
+        image.style.left = slots[n - 1].x + "%";
+        image.style.top = slots[n - 1].y + "%";
+        branch.append(image);
+      }
     }
   }
 
@@ -216,10 +215,10 @@
     treeStatus.textContent = "Day " + day + " ornament saved on this device.";
   });
   byId("treeBack").addEventListener("click", () => { scene.hidden = true; });
+  displayTree();
   window.AdventTree = {
     frame(page, dayNumber) {
-      const [filename, width, height] = frames[(dayNumber - 1) % frames.length];
-      page.style.setProperty("--frame-ratio", width / height);
+      const filename = frames[(dayNumber - 1) % frames.length];
       page.style.setProperty("--frame-image", 'url("assets/' + filename + '.png")');
       page.classList.add("framed");
     },

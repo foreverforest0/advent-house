@@ -98,39 +98,96 @@
 .editor-swatch { width: 34px; height: 34px; border: 1px solid #174d1a; border-radius: 50%; cursor: pointer }
 .editor-swatch[aria-pressed="true"] { outline: 2px solid #174d1a; outline-offset: 2px }
 #editorStatus { display: block; font: 14px var(--serif); min-height: 1.2em }
-.task-page.framed {
-  --frame-ratio: .7;
-  display: grid;
-  place-items: center;
-  background: #fff;
-  overflow: hidden;
-}
-.task-page.framed .garland { z-index: 1 }
-.task-page.framed .back { z-index: 2 }
-.task-sheet {
-  position: relative;
-  display: flex;
-  width: 100%;
-  justify-content: center;
-}
-.framed .task-sheet {
-  --sheet-height: min(calc(100dvh - 98px), calc((100vw - 14px) / var(--frame-ratio)));
-  width: calc(var(--sheet-height) * var(--frame-ratio));
-  height: var(--sheet-height);
-  margin-top: 90px;
-  margin-bottom: 8px;
-  background: var(--frame-image) center / contain no-repeat;
-}
-.framed .tp-inner {
-  position: absolute;
-  inset: 12% 14%;
-  width: auto;
-  overflow: auto;
-  overscroll-behavior: contain;
-  padding: 4px 6px 16px;
-}
-.framed .tp-title { font-size: clamp(30px, 5vw, 65px) }
-.framed .tp-text { font-size: clamp(18px, 2vw, 26px) }
 
-.tree-home { position: fixed; top: 7px; right: 10px; z-index: 26 }
-@media (max-width: 660px) { .tree-home { top: auto; bottom: 8px } .tree-page h1 { max-width: 62%; text-align: center } }
+:root {
+  --paper: #f8f3ea;
+  --paper-2: #eee5d8;
+  --red: #b7110e;
+}
+.countdown { background: var(--paper) }
+.stage {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  column-gap: clamp(8px, 2vw, 28px);
+  padding: 0 clamp(8px, 2vw, 28px);
+}
+.holiday-defs { position: absolute; pointer-events: none }
+.holiday-figures {
+  position: relative;
+  height: min(100%, 720px);
+  width: min(100%, 270px);
+  justify-self: end;
+  grid-column: 1;
+  grid-row: 1;
+  pointer-events: none;
+}
+.holiday-figure { position: absolute; display: block; width: 100%; overflow: hidden }
+.holiday-figure.sleigh { top: 5% }
+.holiday-figure.dog { bottom: 8% }
+.house-wrapper {
+  grid-column: 2;
+  grid-row: 1;
+  width: min(68vw, calc((100dvh - 100px) * 1122 / 1402), 1122px);
+}
+.tree-home {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: start;
+  width: min(100%, 270px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--red);
+  cursor: pointer;
+  font: 400 clamp(16px, 3vw, 43px)/1 var(--heading);
+}
+.tree-home-picture {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: .716;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+}
+.tree-home-picture > img:first-child {
+  position: absolute;
+  width: 136%;
+  left: -18%;
+  top: -56%;
+}
+.tree-home:focus-visible { outline: 2px dotted var(--red); outline-offset: 4px }
+.task-page.framed { --frame-gap: clamp(26px, 9vw, 160px); background: #fff; isolation: isolate }
+.task-page.framed::before {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: 100dvh;
+  height: 100vw;
+  transform: translate(-50%, -50%) rotate(90deg);
+  pointer-events: none;
+  background: var(--frame-image) center / 100% 100% no-repeat;
+}
+.task-page.framed .garland { inset: 4% 11% auto; width: 78%; height: 34px }
+.task-page.framed .back { top: calc(4dvh + 36px); left: var(--frame-gap) }
+.task-sheet { width: 100% }
+.framed .tp-inner {
+  width: min(900px, calc(100% - 2 * var(--frame-gap)));
+  padding: calc(4dvh + 94px) 0 max(10dvh, 48px);
+}
+@media (max-width: 660px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr) minmax(58px, 20vw);
+    column-gap: 5px;
+  }
+  .house-wrapper {
+    grid-column: 1;
+    width: min(100%, calc((100dvh - 100px) * 1122 / 1402));
+  }
+  .tree-home { grid-column: 2 }
+  .holiday-figures { grid-column: 1; justify-self: start; width: 34%; height: 100% }
+  .holiday-figure.sleigh { top: 0 }
+  .holiday-figure.dog { bottom: 0 }
+  .house-wrapper { align-self: center; max-height: calc(100dvh - 156px); width: min(100%, calc((100dvh - 156px) * 1122 / 1402)); }
+  .tree-page h1 { max-width: 62%; text-align: center }
+}

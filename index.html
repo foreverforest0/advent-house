@@ -291,6 +291,19 @@ body::before{
 <div class="countdown"><span class="label">days before the new year</span><span class="num" id="countdown"></span></div>
 
 <div class="stage" id="stage">
+  <svg class="holiday-defs" width="0" height="0" aria-hidden="true">
+    <filter id="holidayInk" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 -1.65 0 0 1.42"/>
+    </filter>
+  </svg>
+  <div class="holiday-figures" aria-hidden="true">
+    <svg class="holiday-figure sleigh" viewBox="300 165 816 258" aria-hidden="true">
+      <image href="assets/holiday-figures.png" width="1199" height="1499" filter="url(#holidayInk)"/>
+    </svg>
+    <svg class="holiday-figure dog" viewBox="130 1098 550 224" aria-hidden="true">
+      <image href="assets/holiday-figures.png" width="1199" height="1499" filter="url(#holidayInk)"/>
+    </svg>
+  </div>
   <div class="house-wrapper" id="houseWrapper">
     <div class="house" id="house">
     <img src="facade.jpg" alt="Hand-drawn advent house">
@@ -298,6 +311,10 @@ body::before{
     <svg class="houseshadow" id="houseShadow" viewBox="0 0 1122 1402" aria-hidden="true"></svg>
     </div>
   </div>
+  <button class="tree-home" id="treeHome" type="button" aria-label="Christmas tree" hidden>
+    <span class="tree-home-picture" id="homeBranches"><img src="assets/tree.png" alt=""></span>
+    <span>Christmas Tree</span>
+  </button>
 </div>
 
 <div class="bank" id="bank" title="Drag to roll a snowball">
@@ -318,7 +335,6 @@ body::before{
   <div class="task-sheet"><div class="tp-inner" id="tpInner"></div></div>
 </section>
 
-<button class="tree-button tree-home" id="treeHome" type="button" hidden>Christmas tree</button>
 <section class="tree-page" id="treePage" aria-labelledby="treeTitle" hidden>
   <h1 id="treeTitle">Christmas Tree</h1>
   <button class="tree-button tree-back" id="treeBack" type="button">← Back</button>
@@ -426,7 +442,9 @@ body::before{
   let done = load(KD, {}), ans = load(KA, {}), current = null;
 
   /* ---------- SOUND ---------- */
-  let ac = null, perforation = null;
+  let ac = null;
+  const paperSound = new Audio("assets/window-tear.mp3");
+  paperSound.preload = "auto";
   function audio(){
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return null;
@@ -435,38 +453,8 @@ body::before{
     return ac;
   }
   function tear(){
-    try {
-      const a = audio();
-      if (!a) return;
-      if (!perforation) {
-        const duration = .32;
-        perforation = a.createBuffer(1, Math.ceil(a.sampleRate * duration), a.sampleRate);
-        const samples = perforation.getChannelData(0);
-        const tears = [[0,.032,.85],[.036,.027,.65],[.072,.039,.9],
-          [.12,.026,.72],[.154,.044,1],[.208,.032,.8],[.25,.065,.95]];
-        for (const [start, length, volume] of tears) {
-          const offset = Math.round(start * a.sampleRate);
-          const size = Math.round(length * a.sampleRate);
-          let previous = 0;
-          for (let i = 0; i < size; i++) {
-            const noise = Math.random() * 2 - 1;
-            const progress = i / size;
-            const envelope = Math.min(1, progress * 24) * (1 - progress) ** 1.8;
-            samples[offset + i] = (noise - .75 * previous) * envelope * volume * .65;
-            previous = noise;
-          }
-        }
-      }
-      const source = a.createBufferSource();
-      source.buffer = perforation;
-      const filter = a.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 4700;
-      source.connect(filter).connect(a.destination);
-      source.start();
-    } catch (error) {
-      console.warn("Paper sound could not play.", error);
-    }
+    paperSound.currentTime = 0;
+    paperSound.play().catch(() => {});
   }
   function pop(){
     const a = audio();
