@@ -191,3 +191,8 @@
   .house-wrapper { align-self: center; max-height: calc(100dvh - 156px); width: min(100%, calc((100dvh - 156px) * 1122 / 1402)); }
   .tree-page h1 { max-width: 62%; text-align: center }
 }
+
+.task-page .tp-title,
+.task-page .tp-title-badge {
+  -webkit-text-stroke: .35px currentColor;
+}
