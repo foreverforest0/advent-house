@@ -282,18 +282,19 @@ body::before{
 .snowball.active{opacity:1}
 .snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 </style>
-<link rel="stylesheet" href="tree.css?v=advent-village">
+<link rel="stylesheet" href="tree.css?v=advent-village-seamless">
 </head>
 <body>
 
 <canvas id="snow"></canvas>
 
+<svg id="homeGarland" class="home-garland" viewBox="0 0 1000 52" preserveAspectRatio="none" aria-hidden="true"></svg>
 <div class="countdown"><span class="label">days before the new year</span><span class="num" id="countdown"></span></div>
 
 <div class="stage" id="stage">
   <div class="village" id="houseWrapper">
     <img class="village-art" src="assets/advent-village.png" width="1672" height="941" alt="Snowy Advent village with a fir tree and numbered windows">
-    <svg class="village-motion" viewBox="0 0 1672 941" aria-hidden="true">
+    <svg class="village-motion" viewBox="0 0 1672 941" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <radialGradient id="villageFeather">
           <stop offset="62%" stop-color="white"/>
@@ -536,6 +537,7 @@ body::before{
       }
     }
 
+    strand(el("#homeGarland"), [[0,8],[109,16],[246,7],[378,22],[546,11],[691,18],[857,9],[1000,15]], 31, 72, 1.15, 1);
     strand(el("#garland"), [[0,9],[157,19],[307,8],[425,15],[591,9],[718,21],[884,10],[1000,15]], 28, 93, 1.10, 1);
   }
 
