@@ -112,18 +112,6 @@
   padding: 0 clamp(6px, 1vw, 16px);
 }
 .holiday-defs { position: absolute; pointer-events: none }
-.holiday-figures {
-  position: relative;
-  grid-area: 1 / 1;
-  align-self: stretch;
-  justify-self: start;
-  width: min(43%, 210px);
-  pointer-events: none;
-  z-index: 1;
-}
-.holiday-figure { position: absolute; display: block; width: 100%; overflow: hidden }
-.holiday-figure.sleigh { top: 0 }
-.holiday-figure.dog { bottom: 0 }
 .house-wrapper {
   grid-area: 1 / 2;
   justify-self: end;
@@ -202,72 +190,44 @@
 .task-page .tp-title, .task-page .tp-title-badge { -webkit-text-stroke: .35px currentColor }
 @media (max-width: 660px) {
   .stage { grid-template-columns: minmax(0, 1fr) minmax(0, 61%); column-gap: 4px }
-  .holiday-figures { width: 68%; height: min(60%, 420px); align-self: center }
   .tree-page h1 { max-width: 62%; text-align: center }
 }
 
+
+.stage { top: 76px; background: var(--paper) }
+.house-wrapper { width: min(100%, calc((100dvh - 120px) * 1122 / 1402)) }
+.tree-home { width: min(100%, calc((100dvh - 120px) * .716)) }
+.home-garland {
+  position: fixed; inset: 0 0 auto; width: 100%; height: 35px;
+  pointer-events: none; z-index: 26;
+}
+.countdown { top: 24px; height: 52px }
 .bank { touch-action: none; cursor: grab }
-.bank:active { cursor: grabbing }
-.snowball.snowball-rolling {
-  width: var(--ball-size, 14px);
-  height: var(--ball-size, 14px);
-  transform: translate(-50%, -50%);
-  transition: none;
-}
-.snowman-area {
-  position: fixed;
-  z-index: 13;
-  left: 10px;
-  bottom: 45px;
-  width: min(36vw, 168px);
-  color: var(--ink);
-  text-align: center;
-  pointer-events: none;
-}
-.snowman { display: flex; flex-direction: column-reverse; align-items: center }
-.snowman-status {
-  margin: 3px 0 0;
-  background: var(--paper);
-  font: 13px/1.25 var(--serif);
-}
-.snowman-ready .snowman-status { color: var(--red) }
+.bank:active, .snowball-held { cursor: grabbing }
 .snowman-ball {
-  position: relative;
-  width: var(--ball-size);
-  height: var(--ball-size);
-  border: 1px solid #9ea89d;
-  border-radius: 50%;
+  position: fixed; z-index: 16;
+  width: var(--ball-size); height: var(--ball-size);
+  transform: translate(-50%, -50%);
+  border: 1px solid #9ea89d; border-radius: 50%;
   background: radial-gradient(circle at 33% 28%, #fff 34%, #e2e8e3);
+  box-shadow: 0 3px 7px #37453e26;
+  cursor: grab; touch-action: none;
 }
-.snowman-ball + .snowman-ball { margin-bottom: -4px }
-.snowman-ball:nth-child(3)::before {
-  content: "";
-  position: absolute;
-  top: 29%;
-  left: 28%;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: #34463b;
-  box-shadow: 10px 0 #34463b;
+.snowball-held { z-index: 41 }
+.snowman-ball span { display: none; position: absolute; pointer-events: none }
+.snowman-head .snowman-face, .snowman-head .snowman-nose, .snowman-head .snowman-scarf {
+  display: block; animation: decorate-snowman .35s ease-out both;
 }
-.snowman-ball:nth-child(3)::after {
-  content: "";
-  position: absolute;
-  top: 43%;
-  left: 45%;
-  width: 10px;
-  height: 6px;
-  background: #c35a29;
-  clip-path: polygon(0 0, 100% 63%, 0 100%);
+.snowman-face { inset: 28% 19% auto; height: 9%;
+  background: radial-gradient(circle at 25% 50%, #34463b 13%, transparent 17%),
+    radial-gradient(circle at 75% 50%, #34463b 13%, transparent 17%); }
+.snowman-nose { top: 42%; left: 46%; width: 33%; height: 17%; background: #dd6931;
+  clip-path: polygon(0 0, 100% 63%, 0 100%); animation-delay: .12s !important; }
+.snowman-scarf { inset: 78% 3% auto; height: 18%; border-radius: 45%; background: var(--red);
+  transform-origin: left center; animation-delay: .23s !important; }
+.snowman-scarf::after { content: ""; position: absolute; top: 45%; right: 11%;
+  width: 19%; height: 230%; border-radius: 3px; background: inherit; transform: rotate(-22deg); }
+@keyframes decorate-snowman { from { scale: .25; opacity: 0 } to { scale: 1; opacity: 1 } }
+@media (prefers-reduced-motion: reduce) {
+  .snowman-head span { animation: none !important }
 }
-#snowmanReset {
-  min-height: 26px;
-  margin-top: 3px;
-  border: 1px solid #a79a87;
-  background: var(--paper);
-  color: inherit;
-  cursor: pointer;
-  pointer-events: auto;
-}
-.holiday-figure.dog { bottom: min(155px, 23%) }

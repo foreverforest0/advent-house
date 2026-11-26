@@ -282,35 +282,25 @@ body::before{
 .snowball.active{opacity:1}
 .snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 </style>
-<link rel="stylesheet" href="tree.css?v=cream-layout">
+<link rel="stylesheet" href="tree.css?v=snow-workshop">
 </head>
 <body>
 
 <canvas id="snow"></canvas>
 
+<svg id="homeGarland" class="home-garland" viewBox="0 0 1000 52" preserveAspectRatio="none" aria-hidden="true"></svg>
 <div class="countdown"><span class="label">days before the new year</span><span class="num" id="countdown"></span></div>
 
 <div class="stage" id="stage">
   <svg class="holiday-defs" width="0" height="0" aria-hidden="true">
     <filter id="housePaper" color-interpolation-filters="sRGB">
       <feComponentTransfer>
-        <feFuncR type="linear" slope="1.025"/>
-        <feFuncG type="linear" slope="1.13"/>
-        <feFuncB type="linear" slope="1.34"/>
+        <feFuncR type="linear" slope="1.07"/>
+        <feFuncG type="linear" slope="1.22"/>
+        <feFuncB type="linear" slope="1.55"/>
       </feComponentTransfer>
     </filter>
-    <filter id="holidayInk" color-interpolation-filters="sRGB">
-      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 -1.65 0 0 1.42"/>
-    </filter>
   </svg>
-  <div class="holiday-figures" aria-hidden="true">
-    <svg class="holiday-figure sleigh" viewBox="300 165 816 258" aria-hidden="true">
-      <image href="assets/holiday-figures.png" width="1199" height="1499" filter="url(#holidayInk)"/>
-    </svg>
-    <svg class="holiday-figure dog" viewBox="130 1098 550 224" aria-hidden="true">
-      <image href="assets/holiday-figures.png" width="1199" height="1499" filter="url(#holidayInk)"/>
-    </svg>
-  </div>
   <div class="house-wrapper" id="houseWrapper">
     <div class="house" id="house">
     <img src="facade.jpg" alt="Hand-drawn advent house">
@@ -330,11 +320,7 @@ body::before{
   </svg>
 </div>
 
-<div class="snowman-area" id="snowmanArea">
-  <div class="snowman" id="snowman" aria-hidden="true"></div>
-  <p class="snowman-status" id="snowmanStatus" role="status">Drag along the snow to roll a snowball.</p>
-  <button type="button" id="snowmanReset" hidden>Build another</button>
-</div>
+<div id="snowman" aria-label="Snowman building area"></div>
 
 <div class="chip">
   <b id="count">0 / 31</b>
@@ -519,77 +505,89 @@ body::before{
       g += '<ellipse class="bulb" cx="' + x + '" cy="' + (y + 8) + '" rx="4.6" ry="5" fill="' + col + '"/>';
     }
     el("#garland").innerHTML = g;
+    el("#homeGarland").innerHTML = g;
   }
 
   /* ---------- SNOWBALL DRAG ---------- */
-  let roll = null;
+  let held = null;
   const bankEl = el("#bank");
   const snowman = el("#snowman");
-  const snowmanArea = el("#snowmanArea");
-  const snowmanStatus = el("#snowmanStatus");
-  const snowmanReset = el("#snowmanReset");
-  const ballSizes = [58, 44, 32];
+  const balls = [];
 
-  function positionRoll(event) {
-    roll.ball.style.left = event.clientX + "px";
-    roll.ball.style.top = event.clientY + "px";
+  function place(ball, x, y) {
+    const radius = ball.size / 2;
+    ball.x = Math.max(radius, Math.min(innerWidth - radius, x));
+    ball.y = Math.max(radius, Math.min(innerHeight - radius, y));
+    ball.element.style.left = ball.x + "px";
+    ball.element.style.top = ball.y + "px";
+    ball.element.style.setProperty("--ball-size", ball.size + "px");
+  }
+
+  function decorate() {
+    const stacked = (top, bottom) => {
+      const spacing = (top.size + bottom.size) / 2;
+      return Math.abs(top.x - bottom.x) <= spacing * .28 &&
+        bottom.y - top.y >= spacing * .64 && bottom.y - top.y <= spacing * 1.10;
+    };
+    for (const head of balls) {
+      const ready = balls.some(middle => middle.size > head.size && stacked(head, middle) &&
+        balls.some(base => base.size > middle.size && stacked(middle, base)));
+      head.element.classList.toggle("snowman-head", ready);
+    }
+  }
+
+  function start(event, ball, growing) {
+    const target = event.currentTarget;
+    target.setPointerCapture(event.pointerId);
+    held = { pointer: event.pointerId, ball, growing, lastX: event.clientX, distance: 0,
+      offsetX: ball.x - event.clientX, offsetY: ball.y - event.clientY };
+    ball.element.classList.add("snowball-held");
+    event.preventDefault();
   }
 
   bankEl.addEventListener("pointerdown", event => {
-    if (event.button !== 0 || roll || snowman.childElementCount === 3) return;
-    const ball = document.createElement("div");
-    ball.className = "snowball snowball-rolling active";
-    ball.setAttribute("aria-hidden", "true");
-    roll = { pointer: event.pointerId, ball, x: event.clientX, travel: 0 };
-    bankEl.setPointerCapture(roll.pointer);
-    document.body.append(ball);
-    positionRoll(event);
-    event.preventDefault();
+    if (event.button !== 0 || held || balls.length >= 12) return;
+    const element = document.createElement("div");
+    element.className = "snowman-ball";
+    const ball = { element, x: event.clientX, y: event.clientY, size: 15 };
+    element.innerHTML = '<span class="snowman-face"></span><span class="snowman-nose"></span><span class="snowman-scarf"></span>';
+    element.addEventListener("pointerdown", next => {
+      if (next.button === 0 && !held) start(next, ball, false);
+    });
+    snowman.append(element);
+    place(ball, ball.x, ball.y);
+    start(event, ball, true);
   });
 
-  bankEl.addEventListener("pointermove", event => {
-    if (roll?.pointer !== event.pointerId) return;
-    if (event.clientY >= bankEl.getBoundingClientRect().top) {
-      roll.travel += Math.abs(event.clientX - roll.x);
+  window.addEventListener("pointermove", event => {
+    if (held?.pointer !== event.pointerId) return;
+    const { ball } = held;
+    if (held.growing && event.clientY >= bankEl.getBoundingClientRect().top) {
+      held.distance += Math.abs(event.clientX - held.lastX);
+      ball.size = Math.min(108, 15 + held.distance * .33);
     }
-    roll.x = event.clientX;
-    const size = Math.min(ballSizes[snowman.childElementCount], 14 + roll.travel * .32);
-    roll.ball.style.setProperty("--ball-size", size + "px");
-    positionRoll(event);
-    const ready = roll.travel >= 38;
-    snowmanArea.classList.toggle("snowman-ready", ready);
-    if (ready && snowmanStatus.textContent !== "Let go to add your snowball.") {
-      snowmanStatus.textContent = "Let go to add your snowball.";
-    }
+    held.lastX = event.clientX;
+    place(ball, event.clientX + held.offsetX, event.clientY + held.offsetY);
   });
 
-  function endRoll(event) {
-    if (roll?.pointer !== event.pointerId) return;
-    const { ball, travel } = roll;
-    roll = null;
-    snowmanArea.classList.remove("snowman-ready");
-    if (event.type !== "pointerup" || travel < 38) {
-      ball.remove();
-      snowmanStatus.textContent = "Drag along the snow to roll a snowball.";
-      return;
+  function release(event) {
+    if (held?.pointer !== event.pointerId) return;
+    const { ball, growing, distance } = held;
+    held = null;
+    ball.element.classList.remove("snowball-held");
+    if (growing) {
+      if (event.type === "pointerup" && distance >= 24) balls.push(ball);
+      else ball.element.remove();
     }
-    const size = ballSizes[snowman.childElementCount];
-    ball.className = "snowman-ball";
-    ball.removeAttribute("style");
-    ball.style.setProperty("--ball-size", size + "px");
-    snowman.append(ball);
-    const complete = snowman.childElementCount === 3;
-    snowmanStatus.textContent = complete ? "Your snowman is ready!" : "Roll another snowball.";
-    snowmanReset.hidden = !complete;
+    decorate();
   }
 
-  bankEl.addEventListener("pointerup", endRoll);
-  bankEl.addEventListener("pointercancel", endRoll);
-  bankEl.addEventListener("lostpointercapture", endRoll);
-  snowmanReset.addEventListener("click", () => {
-    snowman.replaceChildren();
-    snowmanReset.hidden = true;
-    snowmanStatus.textContent = "Drag along the snow to roll a snowball.";
+  window.addEventListener("pointerup", release);
+  window.addEventListener("pointercancel", release);
+  window.addEventListener("lostpointercapture", release);
+  window.addEventListener("resize", () => {
+    for (const ball of balls) place(ball, ball.x, ball.y);
+    decorate();
   });
 
   /* ---------- HOUSE SHADOW ---------- */
