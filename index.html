@@ -478,34 +478,50 @@ body::before{
 
   /* ---------- GARLAND (realistic) ---------- */
   function drawLights(){
-    // Main garland on house
-    let out = "";
-    const N = 20;
-    for (let i = 0; i < N; i++){
-      const x = 120 + i * (880 / (N - 1));
-      const y = 560 + Math.sin(i / (N - 1) * Math.PI * 3) * 14;
-      const col = i % 3 === 0 ? "#8f0500" : i % 3 === 1 ? "#562400" : "#044529";
-      out += '<circle cx="' + x + '" cy="' + y + '" r="5.5" fill="' + col + '" opacity=".12"/>';
-      out += '<circle class="bulb" cx="' + x + '" cy="' + y + '" r="5" fill="' + col + '"/>';
-    }
-    // Wire
-    let wire = '<path d="M110 558 Q300 572 500 558 T890 558" fill="none" stroke="#562400" stroke-width="1.8" stroke-opacity=".35"/>';
-    el("#lights").innerHTML = wire + out;
+    const colors = ["#942b27", "#ae772c", "#3d5946", "#ad635d"];
+    const bulbs = [
+      "M-1.7 0 Q-4 4 -3.4 7 Q-2.7 10 .1 9.5 Q3.8 8.6 3.3 5 Q2.5 2 1.5 0Z",
+      "M-1.4 0 Q-4.8 3.6 -3.1 7.8 Q-1.4 10.8 1.7 8.7 Q4.4 6.8 2.7 3.2 L1.1 0Z",
+      "M-1.4 0 Q-3.5 2.2 -3.7 5.4 Q-4 8.3 -.7 9.7 Q2.9 9.6 3.1 6 Q3 2.6 1.2 0Z"
+    ];
 
-    // Task page garland
-    const wirePath = "M0 19 Q62.5 53 125 19 T250 19 T375 19 T500 19 T625 19 T750 19 T875 19 T1000 19";
-    let g = '<path d="' + wirePath + '" fill="none" stroke="#044529" stroke-width="2" vector-effect="non-scaling-stroke"/>';
-    for (let i = 0; i < 32; i++){
-      const x = (i + .5) * 1000 / 32;
-      const segment = Math.floor(x / 125);
-      const t = x / 125 - segment;
-      const y = 19 + (segment % 2 ? -1 : 1) * 68 * t * (1 - t);
-      const col = ["#8f0500", "#a66623", "#044529"][i % 3];
-      g += '<path d="M' + x + ' ' + y + 'v5" stroke="#044529" stroke-width="1.5"/>';
-      g += '<ellipse class="bulb" cx="' + x + '" cy="' + (y + 8) + '" rx="4.6" ry="5" fill="' + col + '"/>';
+    function strand(svg, points, count, seed, scale, height) {
+      const random = () => {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        return seed / 4294967296;
+      };
+      let wire = "M" + points[0].join(" ");
+      for (let i = 1; i < points.length; i++) {
+        const [x, y] = points[i];
+        const [previousX, previousY] = points[i - 1];
+        const span = x - previousX;
+        wire += " C" + [previousX + span * .27, previousY + 7 * scale,
+          x - span * .28, y + 5 * scale, x, y].join(" ");
+      }
+      svg.innerHTML = '<path d="' + wire + '" fill="none" stroke="#4a4738" stroke-width="' +
+        (.85 * scale) + '" stroke-linecap="round" opacity=".78"/>';
+      const ns = "http://www.w3.org/2000/svg";
+      const path = svg.firstElementChild;
+      const length = path.getTotalLength();
+      for (let i = 0; i < count; i++) {
+        const pos = path.getPointAtLength(length * (i + .18 + random() * .67) / count);
+        const angle = Math.round((random() - .5) * 72);
+        const size = scale * (.74 + .44 * random());
+        const group = document.createElementNS(ns, "g");
+        group.setAttribute("transform", "translate(" + pos.x + " " + pos.y + ") rotate(" +
+          angle + ") scale(" + size + ")");
+        const color = colors[Math.floor(random() * colors.length)];
+        group.innerHTML = '<path d="M0 0 q-.7 2 .2 4 m-1.6 .3 3-.4" fill="none" stroke="#484336" stroke-width="1.1" stroke-linecap="round"/>' +
+          '<g transform="translate(0 4) scale(1 ' + height + ')"><path d="' + bulbs[i % bulbs.length] +
+          '" fill="' + color + '" stroke="#4e3529" stroke-opacity=".46" stroke-width=".55"/>' +
+          '<path d="M-1.5 3.2 q-.8 1.2 -.45 2.45" fill="none" stroke="#fff4cf" stroke-opacity=".57" stroke-width=".65" stroke-linecap="round"/></g>';
+        svg.append(group);
+      }
     }
-    el("#garland").innerHTML = g;
-    el("#homeGarland").innerHTML = g;
+
+    strand(el("#lights"), [[110,558],[233,575],[363,554],[520,568],[671,551],[818,572],[935,555],[1004,561]], 23, 25, 1.05, 1);
+    strand(el("#homeGarland"), [[0,8],[109,16],[246,7],[378,22],[546,11],[691,18],[857,9],[1000,15]], 31, 72, 1.15, 1);
+    strand(el("#garland"), [[0,9],[157,19],[307,8],[425,15],[591,9],[718,21],[884,10],[1000,15]], 28, 93, 1.10, 1);
   }
 
   /* ---------- SNOWBALL DRAG ---------- */
