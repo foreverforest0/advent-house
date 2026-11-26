@@ -303,8 +303,8 @@ body::before{
 @keyframes car-head { 0%, 18% { transform: rotate(-7deg) translateX(-1px) } 70%, 100% { transform: rotate(8deg) translateX(2px) } }
 @keyframes walk-step { from { transform: translate(-2px, 0) rotate(-5deg) } to { transform: translate(3px, -3px) rotate(6deg) } }
 @keyframes walk-forward { 0%, 100% { transform: translate(0, 0) } 55%, 75% { transform: translate(7px, -2px) } }
-.garland-blink { animation: garland-glimmer 3.2s var(--light-delay) ease-in-out infinite; }
-@keyframes garland-glimmer { 0%, 22%, 100% { opacity: .95 } 43%, 64% { opacity: .32 } 82% { opacity: .82 } }
+.garland-blink { filter: drop-shadow(0 0 2.5px #ffd879) drop-shadow(0 0 5px #ffb654aa); animation: garland-glimmer 3.2s var(--light-delay) ease-in-out infinite; }
+@keyframes garland-glimmer { 0%, 22%, 100% { opacity: 1 } 43%, 64% { opacity: .56 } 82% { opacity: .91 } }
 @media (prefers-reduced-motion: reduce) { .garland-blink { animation: none } }
 </style>
 </head>
@@ -538,7 +538,7 @@ body::before{
 
   /* ---------- GARLAND (realistic) ---------- */
   function drawLights(){
-    const colors = ["#942b27", "#ae772c", "#3d5946", "#ad635d"];
+    const colors = ["#ff6050", "#ffcf57", "#79d387", "#ff96ad"];
     const bulbs = [
       "M-1.7 0 Q-4 4 -3.4 7 Q-2.7 10 .1 9.5 Q3.8 8.6 3.3 5 Q2.5 2 1.5 0Z",
       "M-1.4 0 Q-4.8 3.6 -3.1 7.8 Q-1.4 10.8 1.7 8.7 Q4.4 6.8 2.7 3.2 L1.1 0Z",
