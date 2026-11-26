@@ -283,6 +283,30 @@ body::before{
 .snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 </style>
 <link rel="stylesheet" href="tree.css?v=advent-village-seamless">
+<style>
+.village-motion image { animation: none; }
+.turtle-crossing { animation: turtle-crossing 15s linear infinite; }
+.turtle-step { animation: turtle-step .52s ease-in-out infinite alternate; transform-origin: 1118px 797px; }
+.raccoon-tail { animation: raccoon-tail 2.1s ease-in-out infinite alternate; }
+.car-head { animation: car-head 4.8s var(--motion-delay) ease-in-out infinite alternate; }
+.walk-step { animation: walk-step .65s var(--motion-delay) ease-in-out infinite alternate; }
+.walk-forward { animation: walk-forward 4.8s ease-in-out infinite; }
+@keyframes turtle-crossing {
+  0%, 7% { transform: translate(0, 0); opacity: 1 }
+  70%, 86% { transform: translate(96px, 31px); opacity: 1 }
+  94% { transform: translate(103px, 32px); opacity: 0 }
+  95% { transform: translate(0, 0); opacity: 0 }
+  100% { transform: translate(0, 0); opacity: 1 }
+}
+@keyframes turtle-step { from { transform: translateY(1px) rotate(-1.5deg) } to { transform: translateY(-2px) rotate(1.5deg) } }
+@keyframes raccoon-tail { from { transform: rotate(-9deg) } to { transform: rotate(10deg) } }
+@keyframes car-head { 0%, 18% { transform: rotate(-7deg) translateX(-1px) } 70%, 100% { transform: rotate(8deg) translateX(2px) } }
+@keyframes walk-step { from { transform: translate(-2px, 0) rotate(-5deg) } to { transform: translate(3px, -3px) rotate(6deg) } }
+@keyframes walk-forward { 0%, 100% { transform: translate(0, 0) } 55%, 75% { transform: translate(7px, -2px) } }
+.garland-blink { animation: garland-glimmer 3.2s var(--light-delay) ease-in-out infinite; }
+@keyframes garland-glimmer { 0%, 22%, 100% { opacity: .95 } 43%, 64% { opacity: .32 } 82% { opacity: .82 } }
+@media (prefers-reduced-motion: reduce) { .garland-blink { animation: none } }
+</style>
 </head>
 <body>
 
@@ -297,20 +321,38 @@ body::before{
     <svg class="village-motion" viewBox="0 0 1672 941" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <radialGradient id="villageFeather">
-          <stop offset="62%" stop-color="white"/>
+          <stop offset="65%" stop-color="white"/>
           <stop offset="100%" stop-color="white" stop-opacity="0"/>
         </radialGradient>
-      <mask id="village-frog" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="974" cy="630" rx="53" ry="63" fill="url(#villageFeather)"/></mask>
-      <mask id="village-rabbit" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="1524" cy="653" rx="49" ry="72" fill="url(#villageFeather)"/></mask>
-      <mask id="village-turtle" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="1136" cy="743" rx="81" ry="67" fill="url(#villageFeather)"/></mask>
-      <mask id="village-rider" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="1401" cy="772" rx="92" ry="72" fill="url(#villageFeather)"/></mask>
-      <mask id="village-carrier" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="609" cy="642" rx="67" ry="75" fill="url(#villageFeather)"/></mask>
+        <clipPath id="turtle-cutout"><path d="M1064 778 Q1063 752 1080 733 Q1095 714 1125 715 L1138 710 Q1136 699 1146 690 L1145 680 L1154 684 L1158 676 L1167 687 Q1185 687 1174 707 L1161 722 L1154 735 Q1169 743 1180 749 L1180 755 L1177 817 L1171 822 L1168 817 L1170 762 Q1158 759 1148 767 L1142 804 L1138 817 Q1131 825 1125 819 L1125 801 L1110 801 L1107 819 Q1103 827 1097 821 L1095 800 L1082 799 Q1066 803 1064 778Z"/></clipPath>
+        <clipPath id="tail-cutout"><path d="M1356 773 Q1339 780 1320 769 Q1303 762 1291 774 Q1277 766 1260 773 L1254 766 Q1264 754 1274 752 Q1289 736 1311 742 Q1329 742 1340 750 L1364 760Z"/></clipPath>
+        <mask id="village-car-left" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="744" cy="729" rx="31" ry="28" fill="url(#villageFeather)"/></mask>
+        <mask id="village-car-right" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="821" cy="735" rx="31" ry="26" fill="url(#villageFeather)"/></mask>
+        <mask id="village-walk-left" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="494" cy="685" rx="34" ry="39" fill="url(#villageFeather)"/></mask>
+        <mask id="village-walk-middle" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="560" cy="681" rx="31" ry="44" fill="url(#villageFeather)"/></mask>
+        <mask id="village-walk-right" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="635" cy="680" rx="34" ry="46" fill="url(#villageFeather)"/></mask>
+        <mask id="village-walk-group" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="551" cy="606" rx="123" ry="60" fill="url(#villageFeather)"/></mask>
+        <mask id="village-frog" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="970" cy="624" rx="34" ry="45" fill="url(#villageFeather)"/></mask>
+        <mask id="village-rabbit" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="1528" cy="635" rx="35" ry="52" fill="url(#villageFeather)"/></mask>
       </defs>
-      <g mask="url(#village-frog)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:0s;transform-origin:974px 662.76px"/></g>
-      <g mask="url(#village-rabbit)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:-1.7s;transform-origin:1524px 690.44px"/></g>
-      <g mask="url(#village-turtle)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:-2.3s;transform-origin:1136px 777.84px"/></g>
-      <g mask="url(#village-rider)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:-3.7s;transform-origin:1401px 809.44px"/></g>
-      <g mask="url(#village-carrier)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:-1.1s;transform-origin:609px 681px"/></g>
+      <g clip-path="url(#turtle-cutout)">
+        <image href="assets/advent-village.png" width="1672" height="941" transform="translate(0 -147)"/>
+        <path d="M1030 744H1200V837H1030Z" fill="#a8c1c9"/>
+        <path d="m1130 751 102 7-14 22-106-4zm-12 50 93 4-16 22-106-4z" fill="#d8dbd7"/>
+      </g>
+      <g class="turtle-crossing">
+        <g class="turtle-step"><g clip-path="url(#turtle-cutout)"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
+      </g>
+      <g clip-path="url(#tail-cutout)"><image href="assets/advent-village.png" width="1672" height="941" transform="translate(0 -46)"/></g>
+      <g class="raccoon-tail" style="transform-origin:1358px 767px"><g clip-path="url(#tail-cutout)"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
+      <g mask="url(#village-car-left)"><g class="car-head" style="--motion-delay:-.8s;transform-origin:746px 751px"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
+      <g mask="url(#village-car-right)"><g class="car-head" style="--motion-delay:-2.1s;transform-origin:823px 755px"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
+      <g mask="url(#village-walk-left)"><g class="walk-step" style="--motion-delay:0s;transform-origin:493px 664px"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
+      <g mask="url(#village-walk-middle)"><g class="walk-step" style="--motion-delay:-.32s;transform-origin:559px 658px"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
+      <g mask="url(#village-walk-right)"><g class="walk-step" style="--motion-delay:-.61s;transform-origin:637px 653px"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
+      <g mask="url(#village-walk-group)"><g class="walk-forward" style="--motion-delay:0s;transform-origin:555px 667px"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
+      <g mask="url(#village-frog)"><g class="car-head" style="--motion-delay:-.5s;transform-origin:973px 653px"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
+      <g mask="url(#village-rabbit)"><g class="car-head" style="--motion-delay:-1.6s;transform-origin:1526px 672px"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
     </svg>
     <button class="village-tree" id="treeHome" type="button" aria-label="Christmas tree" hidden>
       <span class="village-ornaments" id="homeBranches"></span>
@@ -530,7 +572,7 @@ body::before{
           angle + ") scale(" + size + ")");
         const color = colors[Math.floor(random() * colors.length)];
         group.innerHTML = '<path d="M0 0 q-.7 2 .2 4 m-1.6 .3 3-.4" fill="none" stroke="#484336" stroke-width="1.1" stroke-linecap="round"/>' +
-          '<g transform="translate(0 4) scale(1 ' + height + ')"><path d="' + bulbs[i % bulbs.length] +
+          '<g class="garland-blink" style="--light-delay:' + (-random() * 3.2) + 's" transform="translate(0 4) scale(1 ' + height + ')"><path d="' + bulbs[i % bulbs.length] +
           '" fill="' + color + '" stroke="#4e3529" stroke-opacity=".46" stroke-width=".55"/>' +
           '<path d="M-1.5 3.2 q-.8 1.2 -.45 2.45" fill="none" stroke="#fff4cf" stroke-opacity=".57" stroke-width=".65" stroke-linecap="round"/></g>';
         svg.append(group);
