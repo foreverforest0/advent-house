@@ -301,8 +301,8 @@ body::before{
 @keyframes turtle-step { from { transform: translateY(1px) rotate(-1.5deg) } to { transform: translateY(-2px) rotate(1.5deg) } }
 @keyframes raccoon-tail { from { transform: rotate(-9deg) } to { transform: rotate(10deg) } }
 @keyframes car-head { 0%, 18% { transform: rotate(-7deg) translateX(-1px) } 70%, 100% { transform: rotate(8deg) translateX(2px) } }
-@keyframes walk-step { from { transform: translate(-2px, 0) rotate(-5deg) } to { transform: translate(3px, -3px) rotate(6deg) } }
-@keyframes walk-forward { 0%, 100% { transform: translate(0, 0) } 55%, 75% { transform: translate(7px, -2px) } }
+@keyframes walk-step { from { transform: translate(-.45px, 0) rotate(-1deg) } to { transform: translate(.65px, -1px) rotate(1deg) } }
+@keyframes walk-forward { 0%, 100% { transform: translate(0, 0) } 55%, 75% { transform: translate(2px, -.5px) } }
 .garland-blink { filter: drop-shadow(0 0 2.5px #ffd879) drop-shadow(0 0 5px #ffb654aa); animation: garland-glimmer 3.2s var(--light-delay) ease-in-out infinite; }
 @keyframes garland-glimmer { 0%, 22%, 100% { opacity: 1 } 43%, 64% { opacity: .56 } 82% { opacity: .91 } }
 @media (prefers-reduced-motion: reduce) { .garland-blink { animation: none } }
@@ -324,6 +324,23 @@ body::before{
           <stop offset="65%" stop-color="white"/>
           <stop offset="100%" stop-color="white" stop-opacity="0"/>
         </radialGradient>
+        <linearGradient id="turtle-patch-edge">
+          <stop stop-color="white" stop-opacity="0"/><stop offset="12%" stop-color="white"/>
+          <stop offset="87%" stop-color="white"/><stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="turtle-patch-height" x2="0" y2="1">
+          <stop stop-color="white" stop-opacity="0"/><stop offset="9%" stop-color="white"/>
+          <stop offset="91%" stop-color="white"/><stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </linearGradient>
+        <mask id="turtle-patch-horizontal" maskUnits="userSpaceOnUse" x="1044" y="663" width="157" height="181">
+          <rect x="1044" y="663" width="157" height="181" fill="url(#turtle-patch-edge)"/>
+        </mask>
+        <mask id="turtle-patch-vertical" maskUnits="userSpaceOnUse" x="1044" y="663" width="157" height="181">
+          <rect x="1044" y="663" width="157" height="181" fill="url(#turtle-patch-height)"/>
+        </mask>
+        <clipPath id="turtle-patch-crosswalk">
+          <path d="M1143 749L1201 752V775L1129 772ZM1116 795L1201 799V821L1103 819Z"/>
+        </clipPath>
         <clipPath id="turtle-cutout"><path d="M1064 778 Q1063 752 1080 733 Q1095 714 1125 715 L1138 710 Q1136 699 1146 690 L1145 680 L1154 684 L1158 676 L1167 687 Q1185 687 1174 707 L1161 722 L1154 735 Q1169 743 1180 749 L1180 755 L1177 817 L1171 822 L1168 817 L1170 762 Q1158 759 1148 767 L1142 804 L1138 817 Q1131 825 1125 819 L1125 801 L1110 801 L1107 819 Q1103 827 1097 821 L1095 800 L1082 799 Q1066 803 1064 778Z"/></clipPath>
         <clipPath id="tail-cutout"><path d="M1356 773 Q1339 780 1320 769 Q1303 762 1291 774 Q1277 766 1260 773 L1254 766 Q1264 754 1274 752 Q1289 736 1311 742 Q1329 742 1340 750 L1364 760Z"/></clipPath>
         <mask id="village-car-left" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="744" cy="729" rx="31" ry="28" fill="url(#villageFeather)"/></mask>
@@ -335,10 +352,14 @@ body::before{
         <mask id="village-frog" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="970" cy="624" rx="34" ry="45" fill="url(#villageFeather)"/></mask>
         <mask id="village-rabbit" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="1528" cy="635" rx="35" ry="52" fill="url(#villageFeather)"/></mask>
       </defs>
-      <g clip-path="url(#turtle-cutout)">
-        <image href="assets/advent-village.png" width="1672" height="941" transform="translate(0 -147)"/>
-        <path d="M1030 744H1200V837H1030Z" fill="#a8c1c9"/>
-        <path d="m1130 751 102 7-14 22-106-4zm-12 50 93 4-16 22-106-4z" fill="#d8dbd7"/>
+      <g mask="url(#turtle-patch-horizontal)">
+        <g mask="url(#turtle-patch-vertical)">
+          <image href="assets/advent-village.png" width="1672" height="941" transform="translate(-4076 0) scale(5 1)"/>
+          <g clip-path="url(#turtle-patch-crosswalk)">
+            <path d="M1080 749H1210V831H1080Z" fill="#deddd6"/>
+            <image href="assets/advent-village.png" width="1672" height="941" transform="translate(37 -57)" opacity=".25"/>
+          </g>
+        </g>
       </g>
       <g class="turtle-crossing">
         <g class="turtle-step"><g clip-path="url(#turtle-cutout)"><image href="assets/advent-village.png" width="1672" height="941"/></g></g>
