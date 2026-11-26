@@ -6,7 +6,7 @@
 <title>Advent · the house</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Lora:ital,wght@0,400;0,500;1,400&family=Parisienne&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Lora:ital,wght@0,400;0,500;1,400&family=Sacramento&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -25,7 +25,7 @@
   --white:#fffbe9;
   --mono:'Cutive Mono','Courier New',monospace;
   --serif:'Lora',Georgia,serif;
-  --heading:'Parisienne','Snell Roundhand','Segoe Script',cursive;
+  --heading:'Sacramento','Snell Roundhand','Segoe Script',cursive;
 }
 
 html,body{height:100%;margin:0;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--mono)}
@@ -282,7 +282,7 @@ body::before{
 .snowball.active{opacity:1}
 .snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 </style>
-<link rel="stylesheet" href="tree.css">
+<link rel="stylesheet" href="tree.css?v=cream-layout">
 </head>
 <body>
 
@@ -292,6 +292,13 @@ body::before{
 
 <div class="stage" id="stage">
   <svg class="holiday-defs" width="0" height="0" aria-hidden="true">
+    <filter id="housePaper" color-interpolation-filters="sRGB">
+      <feComponentTransfer>
+        <feFuncR type="linear" slope="1.025"/>
+        <feFuncG type="linear" slope="1.13"/>
+        <feFuncB type="linear" slope="1.34"/>
+      </feComponentTransfer>
+    </filter>
     <filter id="holidayInk" color-interpolation-filters="sRGB">
       <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 -1.65 0 0 1.42"/>
     </filter>
@@ -313,15 +320,20 @@ body::before{
   </div>
   <button class="tree-home" id="treeHome" type="button" aria-label="Christmas tree" hidden>
     <span class="tree-home-picture" id="homeBranches"><img src="assets/tree.png" alt=""></span>
-    <span>Christmas Tree</span>
   </button>
 </div>
 
-<div class="bank" id="bank" title="Drag to roll a snowball">
+<div class="bank" id="bank" title="Roll snow along the bank">
   <svg viewBox="0 0 1000 48" preserveAspectRatio="none">
     <path d="M0 48 L0 22 q36 -12 74 -3 q44 -14 90 -2 q44 -12 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -2 q44 -10 90 -1 q36 -7 74 3 L1000 48 Z"
           fill="#FDFBF6" stroke="#562400" stroke-width="1.2" stroke-opacity=".25"/>
   </svg>
+</div>
+
+<div class="snowman-area" id="snowmanArea">
+  <div class="snowman" id="snowman" aria-hidden="true"></div>
+  <p class="snowman-status" id="snowmanStatus" role="status">Drag along the snow to roll a snowball.</p>
+  <button type="button" id="snowmanReset" hidden>Build another</button>
 </div>
 
 <div class="chip">
@@ -510,60 +522,74 @@ body::before{
   }
 
   /* ---------- SNOWBALL DRAG ---------- */
-  let snowball = null, dragStart = null, dragCurrent = null;
+  let roll = null;
   const bankEl = el("#bank");
+  const snowman = el("#snowman");
+  const snowmanArea = el("#snowmanArea");
+  const snowmanStatus = el("#snowmanStatus");
+  const snowmanReset = el("#snowmanReset");
+  const ballSizes = [58, 44, 32];
 
-  bankEl.addEventListener("pointerdown", (e) => {
-    if (e.button !== 0) return;
-    dragStart = { x: e.clientX, y: e.clientY };
-    dragCurrent = { x: e.clientX, y: e.clientY };
-    snowball = document.createElement("div");
-    snowball.className = "snowball active";
-    snowball.style.left = e.clientX + "px";
-    snowball.style.top = e.clientY + "px";
-    document.body.appendChild(snowball);
-    e.preventDefault();
+  function positionRoll(event) {
+    roll.ball.style.left = event.clientX + "px";
+    roll.ball.style.top = event.clientY + "px";
+  }
+
+  bankEl.addEventListener("pointerdown", event => {
+    if (event.button !== 0 || roll || snowman.childElementCount === 3) return;
+    const ball = document.createElement("div");
+    ball.className = "snowball snowball-rolling active";
+    ball.setAttribute("aria-hidden", "true");
+    roll = { pointer: event.pointerId, ball, x: event.clientX, travel: 0 };
+    bankEl.setPointerCapture(roll.pointer);
+    document.body.append(ball);
+    positionRoll(event);
+    event.preventDefault();
   });
 
-  window.addEventListener("pointermove", (e) => {
-    if (!dragStart) return;
-    dragCurrent = { x: e.clientX, y: e.clientY };
-    if (snowball){
-      snowball.style.left = e.clientX + "px";
-      snowball.style.top = e.clientY + "px";
+  bankEl.addEventListener("pointermove", event => {
+    if (roll?.pointer !== event.pointerId) return;
+    if (event.clientY >= bankEl.getBoundingClientRect().top) {
+      roll.travel += Math.abs(event.clientX - roll.x);
+    }
+    roll.x = event.clientX;
+    const size = Math.min(ballSizes[snowman.childElementCount], 14 + roll.travel * .32);
+    roll.ball.style.setProperty("--ball-size", size + "px");
+    positionRoll(event);
+    const ready = roll.travel >= 38;
+    snowmanArea.classList.toggle("snowman-ready", ready);
+    if (ready && snowmanStatus.textContent !== "Let go to add your snowball.") {
+      snowmanStatus.textContent = "Let go to add your snowball.";
     }
   });
 
-  window.addEventListener("pointerup", (e) => {
-    if (!dragStart) return;
-    const dx = e.clientX - dragStart.x;
-    const dy = e.clientY - dragStart.y;
-    const dist = Math.hypot(dx, dy);
-    if (dist > 30 && snowball){
-      // throw toward click
-      const vx = dx * 1.8, vy = dy * 1.8 - 200;
-      snowball.classList.add("thrown");
-      snowball.style.transform = "translate(" + vx + "px, " + vy + "px) scale(1.4)";
-      snowball.style.opacity = "0";
-      // check hit
-      const rect = snowball.getBoundingClientRect();
-      document.querySelectorAll(".win").forEach(w => {
-        const r = w.getBoundingClientRect();
-        if (rect.left < r.right && rect.right > r.left && rect.top < r.bottom && rect.bottom > r.top){
-          const day = +w.dataset.day;
-          if (!done[day]){
-            tear();
-            w.classList.add("open");
-            setTimeout(() => openTask(day), 300);
-          }
-        }
-      });
-      const thrownBall = snowball;
-      setTimeout(() => thrownBall.remove(), 500);
-    } else if (snowball){
-      snowball.remove();
+  function endRoll(event) {
+    if (roll?.pointer !== event.pointerId) return;
+    const { ball, travel } = roll;
+    roll = null;
+    snowmanArea.classList.remove("snowman-ready");
+    if (event.type !== "pointerup" || travel < 38) {
+      ball.remove();
+      snowmanStatus.textContent = "Drag along the snow to roll a snowball.";
+      return;
     }
-    dragStart = null; dragCurrent = null; snowball = null;
+    const size = ballSizes[snowman.childElementCount];
+    ball.className = "snowman-ball";
+    ball.removeAttribute("style");
+    ball.style.setProperty("--ball-size", size + "px");
+    snowman.append(ball);
+    const complete = snowman.childElementCount === 3;
+    snowmanStatus.textContent = complete ? "Your snowman is ready!" : "Roll another snowball.";
+    snowmanReset.hidden = !complete;
+  }
+
+  bankEl.addEventListener("pointerup", endRoll);
+  bankEl.addEventListener("pointercancel", endRoll);
+  bankEl.addEventListener("lostpointercapture", endRoll);
+  snowmanReset.addEventListener("click", () => {
+    snowman.replaceChildren();
+    snowmanReset.hidden = true;
+    snowmanStatus.textContent = "Drag along the snow to roll a snowball.";
   });
 
   /* ---------- HOUSE SHADOW ---------- */
@@ -632,7 +658,7 @@ body::before{
     window.AdventTree?.frame(page, day);
     page.hidden = false;
     page.scrollTop = 0;
-    el("#tpInner").scrollTop = 0;
+    el(".task-sheet").scrollTop = 0;
     document.body.style.overflow = "hidden";
 
     const ta = el("#tpAns");
