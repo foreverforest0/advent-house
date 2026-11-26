@@ -262,3 +262,42 @@
 @media (prefers-reduced-motion: reduce) {
   .snowman-head span { animation: none !important }
 }
+
+body { background: #252e50 }
+.stage {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  inset: 0 0 44px;
+  background: #252e50;
+  padding: 0;
+}
+.village {
+  position: relative;
+  width: min(100%, calc((100dvh - 44px) * 1672 / 941));
+  aspect-ratio: 1672 / 941;
+}
+.village-art, .village-motion { display: block; position: absolute; inset: 0; width: 100%; height: 100% }
+.village-motion { pointer-events: none }
+.village-motion image { animation: village-sway 5.4s var(--motion-delay) ease-in-out infinite; }
+@keyframes village-sway {
+  0%, 100% { transform: rotate(-.9deg) translateY(1px) }
+  50% { transform: rotate(1.3deg) translateY(-2px) }
+}
+.village .win { z-index: 2; }
+.village .win .flap::after { border-color: transparent }
+.village .win:is(:hover,:focus-visible) .flap::after { border-color: #fff9d9; }
+.village-tree {
+  position: absolute;
+  left: 0; top: 2%;
+  width: 26.5%; height: 84%;
+  padding: 0; border: 0;
+  background: transparent; cursor: pointer;
+  clip-path: polygon(50% 0, 78% 44%, 100% 95%, 91% 100%, 7% 100%, 0 94%, 17% 47%);
+}
+.village-ornaments { display: block; position: absolute; inset: 0; pointer-events: none }
+.village-tree:focus-visible { background: #fff3; }
+.countdown { top: 0; height: 34px; background: #252e50cc; color: #fff4df; pointer-events: none }
+.countdown .label, .countdown .num { color: #fff4df; text-shadow: none }
+@media (prefers-reduced-motion: reduce) {
+  .village-motion { display: none }
+}

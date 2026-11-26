@@ -282,35 +282,39 @@ body::before{
 .snowball.active{opacity:1}
 .snowball.thrown{transition:transform .45s cubic-bezier(.2,.7,.3,1), opacity .3s}
 </style>
-<link rel="stylesheet" href="tree.css?v=task-columns">
+<link rel="stylesheet" href="tree.css?v=advent-village">
 </head>
 <body>
 
 <canvas id="snow"></canvas>
 
-<svg id="homeGarland" class="home-garland" viewBox="0 0 1000 52" preserveAspectRatio="none" aria-hidden="true"></svg>
 <div class="countdown"><span class="label">days before the new year</span><span class="num" id="countdown"></span></div>
 
 <div class="stage" id="stage">
-  <svg class="holiday-defs" width="0" height="0" aria-hidden="true">
-    <filter id="housePaper" color-interpolation-filters="sRGB">
-      <feComponentTransfer>
-        <feFuncR type="linear" slope="1.07"/>
-        <feFuncG type="linear" slope="1.22"/>
-        <feFuncB type="linear" slope="1.55"/>
-      </feComponentTransfer>
-    </filter>
-  </svg>
-  <div class="house-wrapper" id="houseWrapper">
-    <div class="house" id="house">
-    <img src="facade.jpg" alt="Hand-drawn advent house">
-    <svg class="lights" id="lights" viewBox="0 0 1122 1402" aria-hidden="true"></svg>
-    <svg class="houseshadow" id="houseShadow" viewBox="0 0 1122 1402" aria-hidden="true"></svg>
-    </div>
+  <div class="village" id="houseWrapper">
+    <img class="village-art" src="assets/advent-village.png" width="1672" height="941" alt="Snowy Advent village with a fir tree and numbered windows">
+    <svg class="village-motion" viewBox="0 0 1672 941" aria-hidden="true">
+      <defs>
+        <radialGradient id="villageFeather">
+          <stop offset="62%" stop-color="white"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+      <mask id="village-frog" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="974" cy="630" rx="53" ry="63" fill="url(#villageFeather)"/></mask>
+      <mask id="village-rabbit" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="1524" cy="653" rx="49" ry="72" fill="url(#villageFeather)"/></mask>
+      <mask id="village-turtle" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="1136" cy="743" rx="81" ry="67" fill="url(#villageFeather)"/></mask>
+      <mask id="village-rider" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="1401" cy="772" rx="92" ry="72" fill="url(#villageFeather)"/></mask>
+      <mask id="village-carrier" maskUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941"><ellipse cx="609" cy="642" rx="67" ry="75" fill="url(#villageFeather)"/></mask>
+      </defs>
+      <g mask="url(#village-frog)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:0s;transform-origin:974px 662.76px"/></g>
+      <g mask="url(#village-rabbit)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:-1.7s;transform-origin:1524px 690.44px"/></g>
+      <g mask="url(#village-turtle)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:-2.3s;transform-origin:1136px 777.84px"/></g>
+      <g mask="url(#village-rider)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:-3.7s;transform-origin:1401px 809.44px"/></g>
+      <g mask="url(#village-carrier)"><image href="assets/advent-village.png" width="1672" height="941" style="--motion-delay:-1.1s;transform-origin:609px 681px"/></g>
+    </svg>
+    <button class="village-tree" id="treeHome" type="button" aria-label="Christmas tree" hidden>
+      <span class="village-ornaments" id="homeBranches"></span>
+    </button>
   </div>
-  <button class="tree-home" id="treeHome" type="button" aria-label="Christmas tree" hidden>
-    <span class="tree-home-picture" id="homeBranches"><img src="assets/tree.png" alt=""></span>
-  </button>
 </div>
 
 <div class="bank" id="bank" title="Roll snow along the bank">
@@ -379,25 +383,38 @@ body::before{
   /* coordinates from illustration (1122 x 1402) */
   const W = 1122, H = 1402;
   const CELLS = [
-    { d:28, x:275, y:294, w:58, h:62 }, { d:16, x:420, y:294, w:58, h:62 },
-    { d:29, x:572, y:292, w:58, h:62 }, { d:3,  x:713, y:294, w:52, h:62 },
-    { d:15, x:855, y:296, w:58, h:62 },
-    { d:7,  x:224, y:477, w:66, h:80 }, { d:20, x:400, y:477, w:66, h:80 },
-    { d:31, x:571, y:473, w:58, h:80 }, { d:4,  x:734, y:478, w:60, h:80 },
-    { d:13, x:901, y:476, w:66, h:80 },
-    { d:23, x:230, y:678, w:66, h:80 }, { d:9,  x:406, y:678, w:58, h:80 },
-    { d:6,  x:567, y:680, w:58, h:80 }, { d:17, x:730, y:677, w:66, h:80 },
-    { d:26, x:897, y:680, w:66, h:80 },
-    { d:21, x:224, y:863, w:66, h:78 }, { d:2,  x:397, y:864, w:56, h:78 },
-    { d:19, x:567, y:862, w:60, h:78 }, { d:30, x:730, y:862, w:66, h:78 },
-    { d:22, x:905, y:863, w:66, h:78 },
-    { d:18, x:220, y:1021, w:64, h:78 }, { d:12, x:396, y:1021, w:60, h:78 },
-    { d:5,  x:568, y:1021, w:56, h:78 }, { d:27, x:731, y:1020, w:64, h:78 },
-    { d:10, x:903, y:1021, w:64, h:78 },
-    { d:8,  x:212, y:1221, w:60, h:86 }, { d:14, x:355, y:1221, w:60, h:86 },
-    { d:25, x:511, y:1205, w:62, h:110 }, { d:11, x:671, y:1221, w:60, h:86 },
-    { d:24, x:810, y:1222, w:60, h:86 }, { d:1,  x:944, y:1222, w:56, h:86 }
-  ];
+    [523, 525, 70, 59],
+    [565, 455, 117, 64],
+    [935, 418, 35, 62],
+    [1230, 239, 62, 70],
+    [827, 596, 135, 132],
+    [699, 367, 88, 52],
+    [1237, 475, 88, 42],
+    [526, 362, 77, 76],
+    [1109, 412, 118, 100],
+    [972, 552, 89, 53],
+    [562, 277, 122, 53],
+    [611, 528, 77, 63],
+    [829, 471, 134, 74],
+    [1547, 366, 88, 47],
+    [1544, 414, 87, 43],
+    [1541, 487, 63, 67],
+    [1407, 308, 95, 55],
+    [826, 365, 66, 74],
+    [1367, 553, 93, 76],
+    [1111, 584, 127, 79],
+    [612, 362, 77, 76],
+    [1456, 557, 59, 68],
+    [1427, 385, 108, 71],
+    [969, 343, 97, 60],
+    [702, 299, 87, 44],
+    [1426, 466, 108, 69],
+    [1542, 560, 79, 52],
+    [698, 548, 75, 42],
+    [698, 594, 75, 44],
+    [1426, 643, 92, 52],
+    [698, 638, 75, 44]
+  ].map(([x, y, w, h], i) => ({ d: i + 1, x, y, w, h }));
 
   /* creative holiday names for each window */
   const NAMES = {
@@ -519,8 +536,6 @@ body::before{
       }
     }
 
-    strand(el("#lights"), [[110,558],[233,575],[363,554],[520,568],[671,551],[818,572],[935,555],[1004,561]], 23, 25, 1.05, 1);
-    strand(el("#homeGarland"), [[0,8],[109,16],[246,7],[378,22],[546,11],[691,18],[857,9],[1000,15]], 31, 72, 1.15, 1);
     strand(el("#garland"), [[0,9],[157,19],[307,8],[425,15],[591,9],[718,21],[884,10],[1000,15]], 28, 93, 1.10, 1);
   }
 
@@ -607,23 +622,16 @@ body::before{
   });
 
   /* ---------- HOUSE SHADOW ---------- */
-  function drawHouseShadow(){
-    el("#houseShadow").innerHTML =
-      '<defs><filter id="gs" x="-30%" y="-60%" width="160%" height="260%">' +
-      '<feGaussianBlur stdDeviation="28"/></filter></defs>' +
-      '<ellipse cx="561" cy="1332" rx="360" ry="28" fill="#562400" opacity=".22" filter="url(#gs)"/>';
-  }
-
   /* ---------- BUILD ---------- */
   function build(){
     const houseWrapper = el("#houseWrapper");
     CELLS.forEach(c => {
       const b = document.createElement("button");
       b.className = "win" + (done[c.d] ? " open done" : "");
-      b.style.left = ((c.x - c.w/2) / 1122 * 100) + "%";
-      b.style.top = ((c.y - c.h/2) / 1402 * 100) + "%";
-      b.style.width = (c.w / 1122 * 100) + "%";
-      b.style.height = (c.h / 1402 * 100) + "%";
+      b.style.left = ((c.x - c.w/2) / 1672 * 100) + "%";
+      b.style.top = ((c.y - c.h/2) / 941 * 100) + "%";
+      b.style.width = (c.w / 1672 * 100) + "%";
+      b.style.height = (c.h / 941 * 100) + "%";
       b.setAttribute("aria-label", "Day " + c.d);
       b.dataset.day = c.d;
       b.innerHTML = '<span class="flap"></span><span class="glow"></span>';
@@ -768,7 +776,7 @@ body::before{
 
   /* ---------- INIT ---------- */
   document.addEventListener("DOMContentLoaded", () => {
-    build(); drawLights(); drawHouseShadow(); resizeSnow(); updateCountdown();
+    build(); drawLights(); resizeSnow(); updateCountdown();
     requestAnimationFrame(snowLoop);
     window.addEventListener("resize", resizeSnow);
     setInterval(updateCountdown, 30000);
